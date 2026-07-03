@@ -1,0 +1,13 @@
+# 确保 PHP 文件可以接受路径信息
+AcceptPathInfo On
+
+# 生产环境关闭错误显示
+php_flag display_errors 0
+
+# URL 重写：所有请求转发给 index.php
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?pathinfo=$1 [QSA,L]
+</IfModule>

@@ -1,0 +1,20 @@
+{
+    "name": "shop-mvc/shop",
+    "description": "PHP原生MVC商城",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "framework\\": "framework/",
+            "app\\": "app/"
+        }
+    },
+    "require": {
+        "gregwar/captcha": "^1.2"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": " https://mirrors.aliyun.com/composer/"
+        }
+    }
+}

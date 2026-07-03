@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    # 启用 AcceptPathInfo - 这是关键！
+    AcceptPathInfo On
+    
+    RewriteEngine On
+    
+    # 静态资源直接访问
+    RewriteCond %{REQUEST_URI} ^/shop_mvc/resources/
+    RewriteRule ^resources/(.*)$ resources/$1 [L]
+    
+    RewriteCond %{REQUEST_URI} ^/shop_mvc/public/
+    RewriteRule ^public/(.*)$ public/$1 [L]
+    
+    # 所有其他请求都通过public/index.php处理
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ public/index.php?pathinfo=$1 [QSA,L]
+</IfModule>
