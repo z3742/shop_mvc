@@ -16,6 +16,9 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>热卖商城 - 首页</title>
     <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/bootstrap-custom.css">
 </head>
 
 <body>
@@ -50,22 +53,47 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
             </div>
             <form class="search-box" action="<?php echo APP_BASE ?>/index/search" method="get">
                 <input type="text" class="search-input" name="keyword" placeholder="搜索商品或分类">
-                <button type="submit" class="search-btn">搜索</button>
+                <button type="submit" class="search-btn"><i class="bi bi-search me-1"></i>搜索</button>
             </form>
-            <div class="head-cart" id="head-cart">购物车<span class="cart-num" id="cart-num"><?= $cartCount ?></span></div>
+            <div class="head-cart" id="head-cart" data-bs-toggle="tooltip" data-bs-placement="bottom" title="点击查看购物车">
+                <i class="bi bi-cart3 me-1"></i>购物车<span class="cart-num" id="cart-num"><?= $cartCount ?></span>
+            </div>
         </div>
     </div>
 
-    <div class="nav">
-        <div class="nav-inner">
-            <ul class="nav-list">
-                <li class="active"><a href="<?php echo APP_BASE ?>/index/index">首页</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/category">全部分类</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">精选商品</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/cart">购物车</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/user">个人中心</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/help">帮助中心</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-lg bs-navbar sticky-top">
+        <div class="container-fluid" style="max-width:1600px;">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
+                <i class="bi bi-list fs-4" style="color:var(--text-primary);"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav gap-1">
+                    <li class="nav-item"><a class="nav-link active" href="<?php echo APP_BASE ?>/index/index"><i class="bi bi-house-door me-1"></i>首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/category"><i class="bi bi-grid me-1"></i>全部分类</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/goods_list"><i class="bi bi-stars me-1"></i>精选商品</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/cart"><i class="bi bi-cart3 me-1"></i>购物车</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/user"><i class="bi bi-person me-1"></i>个人中心</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/help"><i class="bi bi-question-circle me-1"></i>帮助中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 移动端导航 Offcanvas -->
+    <div class="offcanvas offcanvas-start bs-offcanvas" tabindex="-1" id="mobileNav">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title"><i class="bi bi-list me-2"></i>导航菜单</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="list-group bs-list-group">
+                <a href="<?php echo APP_BASE ?>/index/index" class="list-group-item active"><i class="bi bi-house-door me-2"></i>首页</a>
+                <a href="<?php echo APP_BASE ?>/index/category" class="list-group-item"><i class="bi bi-grid me-2"></i>全部分类</a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list" class="list-group-item"><i class="bi bi-stars me-2"></i>精选商品</a>
+                <a href="<?php echo APP_BASE ?>/index/cart" class="list-group-item"><i class="bi bi-cart3 me-2"></i>购物车</a>
+                <a href="<?php echo APP_BASE ?>/index/user" class="list-group-item"><i class="bi bi-person me-2"></i>个人中心</a>
+                <a href="<?php echo APP_BASE ?>/index/help" class="list-group-item"><i class="bi bi-question-circle me-2"></i>帮助中心</a>
+            </div>
         </div>
     </div>
 
@@ -75,7 +103,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         <div class="flash-sale-section">
             <div class="flash-sale-header">
                 <div class="flash-sale-title">
-                    <span class="flash-icon">⚡</span>
+                    <span class="flash-icon"><i class="bi bi-lightning-charge-fill"></i></span>
                     <h2>限时秒杀</h2>
                     <span class="flash-subtitle">超低价格 · 限时抢购 · 抢完即止</span>
                 </div>
@@ -124,7 +152,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         <div class="banner-row">
             <div class="category-nav">
                 <div class="nav-header">
-                    <span class="nav-icon">📁</span>
+                    <span class="nav-icon"><i class="bi bi-folder2-open"></i></span>
                     <span>全部分类</span>
                 </div>
                 <ul class="nav-list">
@@ -219,10 +247,10 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <div class="hot-rank-section main-content">
         <div class="goods-header">
             <div class="goods-title">
-                <span class="title-icon">🏆</span>
-                <span>热销排行榜</span>
-            </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="more-link">查看更多 →</a>
+                    <span class="title-icon"><i class="bi bi-trophy-fill"></i></span>
+                    <span>热销排行榜</span>
+                </div>
+            <a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="hot-rank-list">
             <?php foreach ($hotRanking as $index => $item): $rank = $index + 1; ?>
@@ -248,10 +276,10 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <div class="goods-section main-content">
         <div class="goods-header">
             <div class="goods-title">
-                <span class="title-icon">🔥</span>
-                <span>热门商品</span>
-            </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 →</a>
+                    <span class="title-icon"><i class="bi bi-fire"></i></span>
+                    <span>热门商品</span>
+                </div>
+            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="goods-grid">
             <?php if (!empty($randomGoods)): ?>
@@ -276,7 +304,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                                 </div>
                             </div>
                         </a>
-                        <button class="view-detail-btn" data-goods-id="<?= $goods['goods_id'] ?>">查看详情</button>
+                        <button class="view-detail-btn btn-bs-outline" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-eye me-1"></i>查看详情</button>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
@@ -306,9 +334,9 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <div class="recent-viewed-section main-content">
         <div class="goods-header">
             <div class="goods-title">
-                <span class="title-icon">👁</span>
-                <span>最近浏览</span>
-            </div>
+                    <span class="title-icon"><i class="bi bi-clock-history"></i></span>
+                    <span>最近浏览</span>
+                </div>
         </div>
         <div class="recent-viewed-grid">
             <?php foreach ($recentlyViewed as $item): ?>
@@ -337,10 +365,10 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <div class="goods-section main-content">
         <div class="goods-header">
             <div class="goods-title">
-                <span class="title-icon">💡</span>
-                <span>猜你喜欢</span>
-            </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 →</a>
+                    <span class="title-icon"><i class="bi bi-lightbulb"></i></span>
+                    <span>猜你喜欢</span>
+                </div>
+            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="goods-grid" id="recommend-goods">
             <div style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">正在为您推荐商品...</div>
@@ -352,7 +380,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     </div>
 
     <!-- 主题切换按钮 -->
-    <button class="theme-toggle" id="theme-toggle" title="切换深色/浅色模式">🌙</button>
+    <button class="theme-toggle" id="theme-toggle" title="切换深色/浅色模式"><i class="bi bi-moon-stars" id="theme-icon"></i></button>
 
     <!-- 购物车悬浮框 -->
     <div class="cart-float-box" id="cart-float-box">
@@ -373,28 +401,39 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     </div>
 
     <div class="overlay" id="overlay"></div>
-    <div class="back-top">↑</div>
+    <div class="back-top"><i class="bi bi-arrow-up"></i></div>
     <div class="toast" id="toast"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 初始化 Bootstrap Tooltip
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
     <script>
         /* ========== 主题切换 ========== */
         (function() {
             const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
             const savedTheme = localStorage.getItem('theme') || 'light';
             if (savedTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                themeToggle.textContent = '☀';
+                if (themeIcon) themeIcon.className = 'bi bi-sun';
             }
             themeToggle.addEventListener('click', function() {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 if (currentTheme === 'dark') {
                     document.documentElement.removeAttribute('data-theme');
                     localStorage.setItem('theme', 'light');
-                    themeToggle.textContent = '🌙';
+                    if (themeIcon) themeIcon.className = 'bi bi-moon-stars';
                 } else {
                     document.documentElement.setAttribute('data-theme', 'dark');
                     localStorage.setItem('theme', 'dark');
-                    themeToggle.textContent = '☀';
+                    if (themeIcon) themeIcon.className = 'bi bi-sun';
                 }
             });
         })();

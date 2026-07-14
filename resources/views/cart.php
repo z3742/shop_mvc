@@ -12,6 +12,9 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>购物车 - 热卖商城</title>
     <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/bootstrap-custom.css">
 </head>
 
 <body>
@@ -46,29 +49,50 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
             </div>
             <form class="search-box" action="<?php echo APP_BASE ?>/index/search" method="get">
                 <input type="text" class="search-input" name="keyword" placeholder="搜索商品或分类">
-                <button type="submit" class="search-btn">搜索</button>
+                <button type="submit" class="search-btn"><i class="bi bi-search me-1"></i>搜索</button>
             </form>
-            <div class="head-cart" id="head-cart">购物车<span class="cart-num" id="cart-num"><?= $cartCount ?></span></div>
+            <div class="head-cart" id="head-cart" data-bs-toggle="tooltip" data-bs-placement="bottom" title="点击查看购物车"><i class="bi bi-cart3 me-1"></i>购物车<span class="cart-num" id="cart-num"><?= $cartCount ?></span></div>
         </div>
     </div>
 
-    <div class="nav">
-        <div class="nav-inner">
-            <ul class="nav-list">
-                <li><a href="<?php echo APP_BASE ?>/index/index">首页</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/category">全部分类</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">精选商品</a></li>
-                <li class="active"><a href="<?php echo APP_BASE ?>/index/cart">购物车</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/user">个人中心</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/help">帮助中心</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-lg bs-navbar sticky-top">
+        <div class="container-fluid" style="max-width:1600px;">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
+                <i class="bi bi-list fs-4" style="color:var(--text-primary);"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav gap-1">
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/index"><i class="bi bi-house-door me-1"></i>首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/category"><i class="bi bi-grid me-1"></i>全部分类</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/goods_list"><i class="bi bi-stars me-1"></i>精选商品</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="<?php echo APP_BASE ?>/index/cart"><i class="bi bi-cart3 me-1"></i>购物车</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/user"><i class="bi bi-person me-1"></i>个人中心</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/help"><i class="bi bi-question-circle me-1"></i>帮助中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="offcanvas offcanvas-start bs-offcanvas" tabindex="-1" id="mobileNav">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title"><i class="bi bi-list me-2"></i>导航菜单</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="list-group bs-list-group">
+                <a href="<?php echo APP_BASE ?>/index/index" class="list-group-item"><i class="bi bi-house-door me-2"></i>首页</a>
+                <a href="<?php echo APP_BASE ?>/index/category" class="list-group-item"><i class="bi bi-grid me-2"></i>全部分类</a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list" class="list-group-item"><i class="bi bi-stars me-2"></i>精选商品</a>
+                <a href="<?php echo APP_BASE ?>/index/cart" class="list-group-item active"><i class="bi bi-cart3 me-2"></i>购物车</a>
+                <a href="<?php echo APP_BASE ?>/index/user" class="list-group-item"><i class="bi bi-person me-2"></i>个人中心</a>
+                <a href="<?php echo APP_BASE ?>/index/help" class="list-group-item"><i class="bi bi-question-circle me-2"></i>帮助中心</a>
+            </div>
         </div>
     </div>
 
     <div class="main-layout main-content">
         <!-- 左侧导航 -->
         <div class="sidebar-left">
-            <h3 class="sidebar-title">🛍️ 快捷入口</h3>
+            <h3 class="sidebar-title"><i class="bi bi-bag-heart me-1"></i> 快捷入口</h3>
             <ul class="sidebar-list">
                 <li><a href="<?php echo APP_BASE ?>/index/index">返回商城首页</a></li>
                 <li><a href="<?php echo APP_BASE ?>/index/goods_list">继续选购商品</a></li>
@@ -76,7 +100,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                 <li><a href="<?php echo APP_BASE ?>/index/user">商品收藏夹</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">📝 购物须知</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-clipboard-check me-1"></i> 购物须知</h3>
             <ul class="sidebar-list">
                 <li><a href="#">满99元全国包邮</a></li>
                 <li><a href="#">支持货到付款服务</a></li>
@@ -84,7 +108,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                 <li><a href="#">正品保证 假一赔十</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">🛎️ 售后服务</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-bell me-1"></i> 售后服务</h3>
             <ul class="sidebar-list">
                 <li><a href="#">在线客服咨询</a></li>
                 <li><a href="#">物流进度查询</a></li>
@@ -97,9 +121,9 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
             <div class="goods-title">我的购物车</div>
             <?php if (empty($cartList)): ?>
                 <div class="cart-empty" style="text-align: center; padding: 60px 0;">
-                    <div style="font-size: 48px; margin-bottom: 15px;">🛒</div>
+                    <div style="font-size: 48px; margin-bottom: 15px;"><i class="bi bi-cart-x" style="color:var(--text-muted);"></i></div>
                     <p style="color: #999; margin-bottom: 20px;">购物车空空如也</p>
-                    <a href="<?php echo APP_BASE ?>/index/goods_list" class="form-btn" style="display: inline-block; width: auto; padding: 10px 30px;">去选购</a>
+                    <a href="<?php echo APP_BASE ?>/index/goods_list" class="form-btn btn-bs-primary" style="display: inline-block; width: auto; padding: 10px 30px;"><i class="bi bi-bag me-1"></i>去选购</a>
                 </div>
             <?php else: ?>
                 <table class="cart-table">
@@ -150,7 +174,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
 
         <!-- 右侧推荐 -->
         <div class="sidebar-right">
-            <h3 class="sidebar-title">🎁 热门优惠券</h3>
+            <h3 class="sidebar-title"><i class="bi bi-gift me-1"></i> 热门优惠券</h3>
             <ul class="sidebar-list">
                 <li><a href="#">满200减20 通用券</a></li>
                 <li><a href="#">满200减20 品类券</a></li>
@@ -158,14 +182,14 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                 <li><a href="#">新用户首单专享优惠</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">🔥 热门推荐</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-fire me-1"></i> 热门推荐</h3>
             <ul class="sidebar-list">
                 <li><a href="<?php echo APP_BASE ?>/index/goods_list">热销榜单</a></li>
                 <li><a href="<?php echo APP_BASE ?>/index/goods_list">新品上市限时抢购</a></li>
                 <li><a href="<?php echo APP_BASE ?>/index/goods_list">数码配件</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">💬 用户评价</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-chat-dots me-1"></i> 用户评价</h3>
             <ul class="sidebar-list">
                 <li><a href="#">商品质量很好 物流速度快</a></li>
                 <li><a href="#">价格实惠 值得购买</a></li>
@@ -238,9 +262,18 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
         </div>
     </div>
 
-    <div class="back-top">↑</div>
+    <div class="back-top"><i class="bi bi-arrow-up"></i></div>
     <div class="toast" id="toast"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
     <script>
         const loader = document.querySelector('.loader');
         const mainBoxes = document.querySelectorAll('.main-content');

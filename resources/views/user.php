@@ -10,6 +10,9 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人中心 - 热卖商城</title>
     <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/bootstrap-custom.css">
 </head>
 
 <body>
@@ -44,22 +47,43 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
             </div>
             <form class="search-box" action="<?php echo APP_BASE ?>/index/search" method="get">
                 <input type="text" class="search-input" name="keyword" placeholder="搜索商品或分类">
-                <button type="submit" class="search-btn">搜索</button>
+                <button type="submit" class="search-btn"><i class="bi bi-search me-1"></i>搜索</button>
             </form>
-            <div class="head-cart" id="head-cart">购物车<span class="cart-num" id="cart-num">0</span></div>
+            <div class="head-cart" id="head-cart" data-bs-toggle="tooltip" data-bs-placement="bottom" title="点击查看购物车"><i class="bi bi-cart3 me-1"></i>购物车<span class="cart-num" id="cart-num">0</span></div>
         </div>
     </div>
 
-    <div class="nav">
-        <div class="nav-inner">
-            <ul class="nav-list">
-                <li><a href="<?php echo APP_BASE ?>/index/index">首页</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/category">全部分类</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">精选商品</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/cart">购物车</a></li>
-                <li class="active"><a href="<?php echo APP_BASE ?>/index/user">个人中心</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/help">帮助中心</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-lg bs-navbar sticky-top">
+        <div class="container-fluid" style="max-width:1600px;">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
+                <i class="bi bi-list fs-4" style="color:var(--text-primary);"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center">
+                <ul class="navbar-nav gap-1">
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/index"><i class="bi bi-house-door me-1"></i>首页</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/category"><i class="bi bi-grid me-1"></i>全部分类</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/goods_list"><i class="bi bi-stars me-1"></i>精选商品</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/cart"><i class="bi bi-cart3 me-1"></i>购物车</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="<?php echo APP_BASE ?>/index/user"><i class="bi bi-person me-1"></i>个人中心</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/help"><i class="bi bi-question-circle me-1"></i>帮助中心</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="offcanvas offcanvas-start bs-offcanvas" tabindex="-1" id="mobileNav">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title"><i class="bi bi-list me-2"></i>导航菜单</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="list-group bs-list-group">
+                <a href="<?php echo APP_BASE ?>/index/index" class="list-group-item"><i class="bi bi-house-door me-2"></i>首页</a>
+                <a href="<?php echo APP_BASE ?>/index/category" class="list-group-item"><i class="bi bi-grid me-2"></i>全部分类</a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list" class="list-group-item"><i class="bi bi-stars me-2"></i>精选商品</a>
+                <a href="<?php echo APP_BASE ?>/index/cart" class="list-group-item"><i class="bi bi-cart3 me-2"></i>购物车</a>
+                <a href="<?php echo APP_BASE ?>/index/user" class="list-group-item active"><i class="bi bi-person me-2"></i>个人中心</a>
+                <a href="<?php echo APP_BASE ?>/index/help" class="list-group-item"><i class="bi bi-question-circle me-2"></i>帮助中心</a>
+            </div>
         </div>
     </div>
 
@@ -76,7 +100,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                     <div class="user-type"><?php echo $isAdmin ? '管理员' : '普通用户' ?></div>
                 </div>
             </div>
-            <h3 class="sidebar-title">👤 个人中心</h3>
+            <h3 class="sidebar-title"><i class="bi bi-person-circle me-1"></i> 个人中心</h3>
             <ul class="sidebar-list user-menu" id="user-menu">
                 <li class="active"><a href="#orders" onclick="switchMenu(this, 'orders')">我的订单</a></li>
                 <li><a href="#pending" onclick="switchMenu(this, 'pending')">待付款</a></li>
@@ -86,7 +110,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
             </ul>
 
             <?php if (!$isAdmin): ?>
-                <h3 class="sidebar-title" style="margin-top:20px;">📦 商品管理</h3>
+                <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-box-seam me-1"></i> 商品管理</h3>
                 <ul class="sidebar-list" id="goods-menu">
                     <li><a href="#addGoods" onclick="switchMenu(this, 'addGoods')">上架商品</a></li>
                     <li><a href="#myGoods" onclick="switchMenu(this, 'myGoods')">我的商品</a></li>
@@ -94,7 +118,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
             <?php endif; ?>
 
             <?php if ($isAdmin): ?>
-                <h3 class="sidebar-title" style="margin-top:20px;">🔧 管理中心</h3>
+                <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-gear me-1"></i> 管理中心</h3>
                 <ul class="sidebar-list admin-menu" id="admin-menu">
                     <li><a href="#audit" onclick="switchMenu(this, 'audit')">商品审核</a></li>
                     <li><a href="#adminOrders" onclick="switchMenu(this, 'adminOrders')">订单管理</a></li>
@@ -102,12 +126,12 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                 </ul>
             <?php endif; ?>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">❤️ 我的收藏</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-heart me-1"></i> 我的收藏</h3>
             <ul class="sidebar-list" id="favorite-menu">
                 <li><a href="#favorites" onclick="switchMenu(this, 'favorites')">我的收藏</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">⚙️ 账户设置</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-gear-wide-connected me-1"></i> 账户设置</h3>
             <ul class="sidebar-list" id="account-menu">
                 <li><a href="#address" onclick="switchMenu(this, 'address')">收货地址管理</a></li>
                 <li><a href="#password" onclick="switchMenu(this, 'password')">修改登录密码</a></li>
@@ -324,21 +348,21 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
         </div>
 
         <div class="sidebar-right">
-            <h3 class="sidebar-title">🎁 我的优惠券</h3>
+            <h3 class="sidebar-title"><i class="bi bi-gift me-1"></i> 我的优惠券</h3>
             <ul class="sidebar-list">
                 <li><a href="#">未使用优惠券(3张)</a></li>
                 <li><a href="#">已使用优惠券</a></li>
                 <li><a href="#">已过期优惠券</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">积分中心</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-award me-1"></i> 积分中心</h3>
             <ul class="sidebar-list">
                 <li><a href="#">当前可用积分</a></li>
                 <li><a href="#">积分获取规则</a></li>
                 <li><a href="#">积分兑换礼品</a></li>
             </ul>
 
-            <h3 class="sidebar-title" style="margin-top:20px;">🎧 客户服务</h3>
+            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-headset me-1"></i> 客户服务</h3>
             <ul class="sidebar-list">
                 <li><a href="<?php echo APP_BASE ?>/index/help">帮助中心</a></li>
                 <li><a href="#">订单问题咨询</a></li>
@@ -412,9 +436,18 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
         </div>
     </div>
 
-    <div class="back-top">↑</div>
+    <div class="back-top"><i class="bi bi-arrow-up"></i></div>
     <div class="toast" id="toast"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
     <script>
         const loader = document.querySelector('.loader');
         const mainBoxes = document.querySelectorAll('.main-content');

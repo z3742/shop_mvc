@@ -17,6 +17,17 @@
 - 新增模型: flashsalemodel, recentlyviewedmodel
 - goods表新增sales字段
 
+## 2026-07-14 Bootstrap 5 集成
+- 引入 Bootstrap 5.3.3 CSS/JS + Bootstrap Icons 1.11.3 (CDN)
+- 新建 resources/css/bootstrap-custom.css: 融合深蓝玻璃拟态主题的Bootstrap定制样式
+- 所有9个视图页面全面重构:
+  - 导航栏: 替换为Bootstrap Navbar + Offcanvas移动端侧滑菜单
+  - 图标: 全站emoji替换为Bootstrap Icons (bi-xxx)
+  - 交互: Tooltip提示、btn-bs-primary/btn-bs-outline按钮样式
+  - 主题切换: 使用Bootstrap Icons动态切换月亮/太阳图标
+  - 返回顶部: Bootstrap Icons上箭头
+- 页面清单: index, goods_list, goods_detail, cart, login, register, category, help, user
+
 ## 设计偏好
 - 用户偏好深蓝+白简洁专业风格
 - 深色模式切换为必备功能

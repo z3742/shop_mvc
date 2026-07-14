@@ -1,62 +1,54 @@
-# 热卖商城网站完善 - 完成概览
+# 热卖商城 - Bootstrap 5 前端样式优化
 
-## 完成总结
+## 完成概述
 
-对"热卖商城"PHP MVC项目进行了全面升级，解决了三大核心痛点：缺乏竞争特色、样式不够新颖、功能不够完善。
+使用 Bootstrap 5.3.3 全面优化了网站前端样式，着重提升了用户交互体验。在保持原有深蓝玻璃拟态主题的基础上，融合 Bootstrap 组件系统，实现了现代化的 UI 升级。
 
-## 三大痛点解决方案
+## 主要改动
 
-### 1. 核心竞争特色（新增功能）
+### 1. 新建自定义样式文件
+- **文件**: `resources/css/bootstrap-custom.css`
+- 将 Bootstrap 5 变量映射到现有深蓝主题变量
+- 定制 Navbar、Offcanvas、List Group、Button 等组件样式
+- 深色模式完整适配
+- 磁吸动画、玻璃拟态效果增强
 
-| 功能 | 说明 | 涉及文件 |
-|------|------|----------|
-| 限时秒杀专区 | 带实时倒计时、秒杀价/原价、库存进度条 | flashsalemodel.php, index.php |
-| 热销排行榜 | TOP5商品按销量排名，金银铜色徽章 | goodsmodel.php(getGoodsBySales), index.php |
-| 最近浏览记录 | 自动记录用户浏览，登录/未登录均支持 | recentlyviewedmodel.php, index.php, goods_detail.php |
-| 商品排序 | 综合排序、销量优先、价格升序/降序 | goodsmodel.php(getGoodsSorted), goods_list.php |
-| 价格筛选 | 最低价-最高价区间筛选 | goods_list.php |
-| 相关推荐 | 商品详情页展示同分类4件推荐 | goodsmodel.php(getRelatedGoods), goods_detail.php |
+### 2. 全站 9 个页面 Bootstrap 集成
 
-### 2. 样式升级
+| 页面 | 主要升级内容 |
+|------|-------------|
+| index.php | Bootstrap Navbar + Offcanvas + Icons + Tooltip + 主题切换图标 |
+| goods_list.php | Navbar + Icons + btn-bs-outline按钮 + 侧边栏图标 |
+| goods_detail.php | Navbar + 收藏/购物车按钮图标 + 侧边栏图标 |
+| cart.php | Navbar + 空状态图标 + 侧边栏图标 |
+| login.php | Navbar + 登录按钮图标 + 表单标题图标 |
+| register.php | Navbar + 注册按钮图标 + 验证码区域图标 |
+| category.php | Navbar + 分类侧边栏图标 |
+| help.php | Navbar + 帮助分类图标 |
+| user.php | Navbar + 个人中心菜单图标 + 优惠券/积分图标 |
 
-| 升级项 | 旧 | 新 |
-|--------|-----|-----|
-| 主色调 | 红色 #e1251b | 深蓝 #1a3a5c + 渐变 |
-| 深色模式 | 无 | CSS变量 + localStorage持久化 |
-| 卡片效果 | 简单阴影 | 玻璃拟态 + 磁吸悬浮 + 顶部光效 |
-| 加载动画 | 红色转圈 | 蓝色转圈 + 骨架屏 |
-| 购物车浮窗 | 白色卡片 | 玻璃拟态(backdrop-filter) |
-| 滚动条 | 默认 | 自定义圆角样式 |
-| 主题切换 | 无 | 右下角浮动按钮，一键切换 |
+### 3. 交互体验提升
+- **Bootstrap Navbar**: 粘性定位 + 移动端 Offcanvas 侧滑菜单
+- **Bootstrap Icons**: 全站 emoji 替换为矢量图标（搜索、购物车、导航、侧边栏等）
+- **Tooltip**: 购物车图标添加悬浮提示
+- **按钮增强**: btn-bs-primary / btn-bs-outline 自定义按钮样式
+- **主题切换**: 使用 Bootstrap Icons 月亮/太阳图标动态切换
+- **返回顶部**: Bootstrap Icons 上箭头图标
 
-### 3. 功能完善
+### 4. 技术栈
+- Bootstrap 5.3.3 (CSS + JS Bundle)
+- Bootstrap Icons 1.11.3
+- 自定义 bootstrap-custom.css 覆盖层
+- CDN 引入，无需本地安装
 
-- 商品列表新增排序栏和价格区间筛选
-- 商品详情新增销量显示、相关推荐、最近浏览
-- 分页链接保留排序和筛选参数
-- 首页新增秒杀、排行、最近浏览三大专区
-
-## 新增/修改文件清单
-
-### 新增文件
-- `app/model/flashsalemodel.php` — 限时秒杀模型
-- `app/model/recentlyviewedmodel.php` — 最近浏览记录模型
-
-### 修改文件
-- `resources/css/style.css` — 完全重写（深蓝主题+深色模式+玻璃拟态）
-- `app/model/goodsmodel.php` — 新增4个方法（热销/排序/计数/相关推荐）
-- `app/http/home/goodscontroller.php` — 新增5个API接口
-- `app/http/home/indexcontroller.php` — 首页加载新数据，列表支持排序，详情记录浏览
-- `app/config/router.php` — 新增5条路由
-- `resources/views/index.php` — 重构首页（秒杀+排行+最近浏览+深色模式）
-- `resources/views/goods_list.php` — 新增排序栏+价格筛选+深色模式
-- `resources/views/goods_detail.php` — 新增相关推荐+最近浏览+深色模式
-- `database/shop_db.sql` — 新增flash_sale表、recently_viewed表、goods表sales字段
-
-## 使用说明
-
-1. 重新导入 `database/shop_db.sql` 到MySQL（新增了表和字段）
-2. 访问首页即可看到秒杀专区、热销排行、最近浏览
-3. 商品列表页可使用排序栏和价格筛选
-4. 右下角按钮可切换深色/浅色模式（自动记忆）
-5. 浏览商品详情后，首页和详情页会显示最近浏览记录
+## 文件变更清单
+- 新增: `resources/css/bootstrap-custom.css`
+- 修改: `resources/views/index.php`
+- 修改: `resources/views/goods_list.php`
+- 修改: `resources/views/goods_detail.php`
+- 修改: `resources/views/cart.php`
+- 修改: `resources/views/login.php`
+- 修改: `resources/views/register.php`
+- 修改: `resources/views/category.php`
+- 修改: `resources/views/help.php`
+- 修改: `resources/views/user.php`
