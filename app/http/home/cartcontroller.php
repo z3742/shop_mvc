@@ -193,6 +193,8 @@ class cartcontroller
             return;
         }
 
+        $addrId = isset($_POST['addr_id']) ? intval($_POST['addr_id']) : 0;
+
         $cartList = $this->cartModel->getCartList($userId);
         if (empty($cartList)) {
             $this->jsonReturn(['code' => 400, 'msg' => '购物车为空']);
@@ -202,7 +204,7 @@ class cartcontroller
         $totalAmount = $this->cartModel->getCartTotal($userId);
 
         $orderModel = new ordermodel();
-        $orderId = $orderModel->createOrder($userId, $cartList, $totalAmount);
+        $orderId = $orderModel->createOrder($userId, $cartList, $totalAmount, $addrId);
 
         if ($orderId !== false) {
             $this->cartModel->clearCart($userId);

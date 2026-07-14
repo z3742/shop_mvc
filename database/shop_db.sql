@@ -282,6 +282,137 @@ CREATE TABLE IF NOT EXISTS `user_address` (
   `detail_addr` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`addr_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `goods_comment`
+--
+
+DROP TABLE IF EXISTS `goods_comment`;
+CREATE TABLE IF NOT EXISTS `goods_comment` (
+  `comment_id` int NOT NULL AUTO_INCREMENT,
+  `goods_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `order_id` int DEFAULT NULL,
+  `content` text NOT NULL,
+  `rating` tinyint DEFAULT '5',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`comment_id`),
+  KEY `goods_id` (`goods_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `goods_favorite`
+--
+
+DROP TABLE IF EXISTS `goods_favorite`;
+CREATE TABLE IF NOT EXISTS `goods_favorite` (
+  `favorite_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `goods_id` int NOT NULL,
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`favorite_id`),
+  UNIQUE KEY `uk_user_goods` (`user_id`,`goods_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `flash_sale`
+-- 限时秒杀活动表
+--
+
+DROP TABLE IF EXISTS `flash_sale`;
+CREATE TABLE IF NOT EXISTS `flash_sale` (
+  `flash_id` int NOT NULL AUTO_INCREMENT,
+  `goods_id` int NOT NULL,
+  `flash_price` decimal(10,2) NOT NULL COMMENT '秒杀价',
+  `original_price` decimal(10,2) DEFAULT NULL COMMENT '原价',
+  `total_stock` int NOT NULL DEFAULT '0' COMMENT '秒杀总库存',
+  `sold_count` int NOT NULL DEFAULT '0' COMMENT '已售数量',
+  `limit_per_user` int NOT NULL DEFAULT '1' COMMENT '每人限购数量',
+  `start_time` datetime NOT NULL COMMENT '秒杀开始时间',
+  `end_time` datetime NOT NULL COMMENT '秒杀结束时间',
+  `status` tinyint NOT NULL DEFAULT '1' COMMENT '0-禁用 1-进行中 2-已结束',
+  `sort_order` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`flash_id`),
+  KEY `goods_id` (`goods_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- 转存表中的数据 `flash_sale`
+--
+
+INSERT INTO `flash_sale` (`flash_id`, `goods_id`, `flash_price`, `original_price`, `total_stock`, `sold_count`, `limit_per_user`, `start_time`, `end_time`, `status`, `sort_order`) VALUES
+(1, 4, 3999.00, 5999.00, 50, 12, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 1),
+(2, 17, 299.00, 499.00, 30, 8, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 2),
+(3, 40, 2999.00, 3999.00, 20, 5, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 3),
+(4, 70, 349.00, 499.00, 40, 15, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 4),
+(5, 10, 299.00, 499.00, 25, 10, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 5),
+(6, 42, 999.00, 1599.00, 15, 3, 1, '2026-07-13 00:00:00', '2026-07-14 23:59:59', 1, 6);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `recently_viewed`
+-- 用户最近浏览记录表
+--
+
+DROP TABLE IF EXISTS `recently_viewed`;
+CREATE TABLE IF NOT EXISTS `recently_viewed` (
+  `view_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL COMMENT '用户ID，未登录为NULL',
+  `session_id` varchar(64) DEFAULT NULL COMMENT '会话ID，未登录用户使用',
+  `goods_id` int NOT NULL,
+  `view_time` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`view_id`),
+  KEY `user_id` (`user_id`),
+  KEY `goods_id` (`goods_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- 给 `goods` 表增加 `sales` 字段（销量统计）
+-- 使用存储过程判断字段是否存在，兼容 MySQL 5.7 / 8.0
+--
+
+DROP PROCEDURE IF EXISTS add_sales_column;
+DELIMITER $$
+CREATE PROCEDURE add_sales_column()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = DATABASE()
+          AND table_name = 'goods'
+          AND column_name = 'sales'
+    ) THEN
+        ALTER TABLE `goods` ADD COLUMN `sales` int NOT NULL DEFAULT '0' COMMENT '总销量' AFTER `stock`;
+    END IF;
+END$$
+DELIMITER ;
+
+CALL add_sales_column();
+DROP PROCEDURE IF EXISTS add_sales_column;
+
+-- 更新一些商品的销量数据（模拟）
+UPDATE `goods` SET `sales` = 358 WHERE `goods_id` = 4;
+UPDATE `goods` SET `sales` = 256 WHERE `goods_id` = 1;
+UPDATE `goods` SET `sales` = 189 WHERE `goods_id` = 40;
+UPDATE `goods` SET `sales` = 167 WHERE `goods_id` = 17;
+UPDATE `goods` SET `sales` = 145 WHERE `goods_id` = 16;
+UPDATE `goods` SET `sales` = 132 WHERE `goods_id` = 70;
+UPDATE `goods` SET `sales` = 98 WHERE `goods_id` = 10;
+UPDATE `goods` SET `sales` = 87 WHERE `goods_id` = 42;
+UPDATE `goods` SET `sales` = 76 WHERE `goods_id` = 8;
+UPDATE `goods` SET `sales` = 65 WHERE `goods_id` = 20;
+UPDATE `goods` SET `sales` = 54 WHERE `goods_id` = 33;
+UPDATE `goods` SET `sales` = 43 WHERE `goods_id` = 22;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

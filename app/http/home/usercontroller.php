@@ -16,6 +16,7 @@ namespace app\http\home;
 
 use app\model\usermodel;
 use app\model\addressmodel;
+use app\model\ordermodel;
 use Gregwar\Captcha\CaptchaBuilder;
 
 class usercontroller
@@ -461,5 +462,138 @@ class usercontroller
         } else {
             $this->jsonReturn(['code' => 500, 'msg' => '删除失败']);
         }
+    }
+
+    public function orderList()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonReturn(['code' => 401, 'msg' => '请先登录']);
+            return;
+        }
+
+        $orderModel = new ordermodel();
+        $orders = $orderModel->getOrderList($_SESSION['user_id']);
+
+        foreach ($orders as &$order) {
+            $order['goods_list'] = $orderModel->getOrderGoods($order['order_id']);
+        }
+
+        $this->jsonReturn(['code' => 200, 'data' => $orders]);
+    }
+
+    public function orderListByStatus()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonReturn(['code' => 401, 'msg' => '请先登录']);
+            return;
+        }
+
+        $status = isset($_GET['status']) ? intval($_GET['status']) : 0;
+        $orderModel = new ordermodel();
+        $orders = $orderModel->getOrderByStatus($_SESSION['user_id'], $status);
+
+        foreach ($orders as &$order) {
+            $order['goods_list'] = $orderModel->getOrderGoods($order['order_id']);
+        }
+
+        $this->jsonReturn(['code' => 200, 'data' => $orders]);
+    }
+
+    public function orderDetail()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonReturn(['code' => 401, 'msg' => '请先登录']);
+            return;
+        }
+
+        $orderId = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+        if (!$orderId) {
+            $this->jsonReturn(['code' => 400, 'msg' => '参数错误']);
+            return;
+        }
+
+        $orderModel = new ordermodel();
+        $order = $orderModel->getOrderDetail($orderId);
+
+        if (!$order || $order['user_id'] != $_SESSION['user_id']) {
+            $this->jsonReturn(['code' => 404, 'msg' => '订单不存在']);
+            return;
+        }
+
+        $order['goods_list'] = $orderModel->getOrderGoods($orderId);
+
+        $this->jsonReturn(['code' => 200, 'data' => $order]);
+    }
+
+    public function updateOrderStatus()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->jsonReturn(['code' => 401, 'msg' => '请先登录']);
+            return;
+        }
+
+        $orderId = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
+        $status = isset($_POST['status']) ? intval($_POST['status']) : 0;
+
+        if (!$orderId) {
+            $this->jsonReturn(['code' => 400, 'msg' => '参数错误']);
+            return;
+        }
+
+        $orderModel = new ordermodel();
+        $order = $orderModel->getOrderDetail($orderId);
+
+        if (!$order) {
+            $this->jsonReturn(['code' => 404, 'msg' => '订单不存在']);
+            return;
+        }
+
+        if ($_SESSION['user_type'] != 1 && $order['user_id'] != $_SESSION['user_id']) {
+            $this->jsonReturn(['code' => 403, 'msg' => '权限不足']);
+            return;
+        }
+
+        if ($_SESSION['user_type'] == 1 && $status == 2 && $order['status'] != 1) {
+            $this->jsonReturn(['code' => 400, 'msg' => '订单状态不正确，无法发货']);
+            return;
+        }
+
+        if ($_SESSION['user_type'] != 1 && $status == 3 && $order['status'] != 2) {
+            $this->jsonReturn(['code' => 400, 'msg' => '订单状态不正确，无法确认收货']);
+            return;
+        }
+
+        if ($_SESSION['user_type'] != 1 && $status == 1 && $order['status'] != 0) {
+            $this->jsonReturn(['code' => 400, 'msg' => '订单状态不正确，无法支付']);
+            return;
+        }
+
+        $result = $orderModel->updateOrderStatus($orderId, $status);
+
+        if ($result !== false) {
+            $statusText = ['待付款', '已付款', '已发货', '已完成', '已取消'];
+            $this->jsonReturn(['code' => 200, 'msg' => '订单状态已更新为：' . ($statusText[$status] ?? '未知')]);
+        } else {
+            $this->jsonReturn(['code' => 500, 'msg' => '更新失败']);
+        }
+    }
+
+    public function adminOrderList()
+    {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] != 1) {
+            $this->jsonReturn(['code' => 403, 'msg' => '权限不足']);
+            return;
+        }
+
+        $status = isset($_GET['status']) ? intval($_GET['status']) : -1;
+        
+        $orderModel = new ordermodel();
+        $orders = $orderModel->getAllOrders($status);
+
+        foreach ($orders as &$order) {
+            $order['goods_list'] = $orderModel->getOrderGoods($order['order_id']);
+        }
+
+        $this->jsonReturn(['code' => 200, 'data' => $orders]);
     }
 }

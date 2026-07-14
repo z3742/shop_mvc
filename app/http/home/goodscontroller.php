@@ -15,6 +15,8 @@ namespace app\http\home;
 
 use app\model\goodsmodel;
 use app\model\categorymodel;
+use app\model\flashsalemodel;
+use app\model\recentlyviewedmodel;
 
 class goodscontroller
 {
@@ -24,13 +26,21 @@ class goodscontroller
     /** @var categorymodel 分类模型实例 */
     private $categoryModel;
 
+    /** @var flashsalemodel 秒杀模型实例 */
+    private $flashSaleModel;
+
+    /** @var recentlyviewedmodel 最近浏览模型实例 */
+    private $recentlyViewedModel;
+
     /**
-     * 构造函数 - 初始化商品模型和分类模型
+     * 构造函数 - 初始化模型
      */
     public function __construct()
     {
         $this->goodsModel = new goodsmodel();
         $this->categoryModel = new categorymodel();
+        $this->flashSaleModel = new flashsalemodel();
+        $this->recentlyViewedModel = new recentlyviewedmodel();
     }
 
     /**
@@ -207,6 +217,96 @@ class goodscontroller
         } else {
             $this->jsonReturn(['code' => 500, 'msg' => '删除失败']);
         }
+    }
+
+    /**
+     * 获取限时秒杀商品列表
+     * 
+     * @return void 返回JSON响应
+     */
+    public function getFlashSales()
+    {
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 6;
+        $flashSales = $this->flashSaleModel->getActiveFlashSales($limit);
+        $endTime = $this->flashSaleModel->getFlashSaleEndTime();
+
+        $this->jsonReturn([
+            'code' => 200,
+            'data' => $flashSales,
+            'end_time' => $endTime
+        ]);
+    }
+
+    /**
+     * 获取热销排行榜
+     * 
+     * @return void 返回JSON响应
+     */
+    public function getHotRanking()
+    {
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 5;
+        $hotRanking = $this->goodsModel->getGoodsBySales($limit);
+        $this->jsonReturn(['code' => 200, 'data' => $hotRanking]);
+    }
+
+    /**
+     * 获取最近浏览记录
+     * 
+     * @return void 返回JSON响应
+     */
+    public function getRecentlyViewed()
+    {
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 12;
+        $userId = $_SESSION['user_id'] ?? null;
+        $sessionId = session_id();
+
+        $recentlyViewed = $this->recentlyViewedModel->getRecentlyViewed($userId, $sessionId, $limit);
+        $this->jsonReturn(['code' => 200, 'data' => $recentlyViewed]);
+    }
+
+    /**
+     * 记录商品浏览
+     * 
+     * @return void 返回JSON响应
+     */
+    public function addView()
+    {
+        $goodsId = isset($_POST['goods_id']) ? intval($_POST['goods_id']) : 0;
+        if (!$goodsId) {
+            $this->jsonReturn(['code' => 400, 'msg' => '参数错误']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'] ?? null;
+        $sessionId = session_id();
+
+        $this->recentlyViewedModel->addView($goodsId, $userId, $sessionId);
+        $this->jsonReturn(['code' => 200, 'msg' => '记录成功']);
+    }
+
+    /**
+     * 获取相关推荐商品
+     * 
+     * @return void 返回JSON响应
+     */
+    public function getRelated()
+    {
+        $goodsId = isset($_GET['goods_id']) ? intval($_GET['goods_id']) : 0;
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 4;
+
+        if (!$goodsId) {
+            $this->jsonReturn(['code' => 400, 'msg' => '参数错误']);
+            return;
+        }
+
+        $goods = $this->goodsModel->getGoodsDetail($goodsId);
+        if (!$goods) {
+            $this->jsonReturn(['code' => 404, 'msg' => '商品不存在']);
+            return;
+        }
+
+        $related = $this->goodsModel->getRelatedGoods($goods['cat_id'], $goodsId, $limit);
+        $this->jsonReturn(['code' => 200, 'data' => $related]);
     }
 
     /**

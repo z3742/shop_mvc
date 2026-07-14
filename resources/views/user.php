@@ -97,9 +97,15 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                 <h3 class="sidebar-title" style="margin-top:20px;">🔧 管理中心</h3>
                 <ul class="sidebar-list admin-menu" id="admin-menu">
                     <li><a href="#audit" onclick="switchMenu(this, 'audit')">商品审核</a></li>
+                    <li><a href="#adminOrders" onclick="switchMenu(this, 'adminOrders')">订单管理</a></li>
                     <li><a href="#userManage" onclick="switchMenu(this, 'userManage')">用户管理</a></li>
                 </ul>
             <?php endif; ?>
+
+            <h3 class="sidebar-title" style="margin-top:20px;">❤️ 我的收藏</h3>
+            <ul class="sidebar-list" id="favorite-menu">
+                <li><a href="#favorites" onclick="switchMenu(this, 'favorites')">我的收藏</a></li>
+            </ul>
 
             <h3 class="sidebar-title" style="margin-top:20px;">⚙️ 账户设置</h3>
             <ul class="sidebar-list" id="account-menu">
@@ -113,43 +119,38 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
         <div class="content-middle">
             <div id="content-orders" class="content-panel">
                 <div class="goods-title">我的订单</div>
-                <p style="line-height:2;font-size:15px;">
-                    欢迎进入个人中心，在这里您可以管理全部订单、商品收藏、收货地址以及账户信息。<br>
-                    订单状态分为：待付款、待发货、待收货、已完成、已售后。<br>
-                    如有任何问题，可前往帮助中心或联系在线客服。 </p>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    暂无相关订单记录，快去选购心仪商品吧！
-                    <div style="margin-top:15px;">
-                        <a href="<?php echo APP_BASE ?>/index/goods_list" class="detail-btn">去选购商品</a>
+                <div id="order-list-container">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
+                        正在加载订单...
                     </div>
                 </div>
             </div>
 
             <div id="content-pending" class="content-panel" style="display:none;">
                 <div class="goods-title">待付款订单</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    暂无待付款订单
+                <div id="order-pending-container">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
                 </div>
             </div>
 
             <div id="content-shipped" class="content-panel" style="display:none;">
                 <div class="goods-title">待发货订单</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    暂无待发货订单
+                <div id="order-shipped-container">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
                 </div>
             </div>
 
             <div id="content-received" class="content-panel" style="display:none;">
                 <div class="goods-title">待收货订单</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    暂无待收货订单
+                <div id="order-received-container">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
                 </div>
             </div>
 
             <div id="content-completed" class="content-panel" style="display:none;">
                 <div class="goods-title">已完成订单</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    暂无已完成订单
+                <div id="order-completed-container">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
                 </div>
             </div>
 
@@ -248,6 +249,20 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                     <div class="modal-body">
                         <div id="audit-detail-content"></div>
                     </div>
+                </div>
+            </div>
+
+            <div id="content-adminOrders" class="content-panel" style="display:none;">
+                <div class="goods-title">订单管理</div>
+                <div id="admin-order-list">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载订单...</div>
+                </div>
+            </div>
+
+            <div id="content-favorites" class="content-panel" style="display:none;">
+                <div class="goods-title">我的收藏</div>
+                <div id="favorite-list">
+                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载收藏...</div>
                 </div>
             </div>
 
@@ -416,6 +431,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                 mainBoxes.forEach(function(box) { box.classList.add('show'); });
             }, 800);
             fetchCartCount();
+            loadOrderList('all');
             <?php if ($isAdmin): ?>
                 loadAuditList();
             <?php endif; ?>
@@ -479,6 +495,144 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
             if (panelId === 'address') {
                 loadAddressList();
             }
+            if (panelId === 'orders') {
+                loadOrderList('all');
+            }
+            if (panelId === 'pending') {
+                loadOrderList('0');
+            }
+            if (panelId === 'shipped') {
+                loadOrderList('2');
+            }
+            if (panelId === 'received') {
+                loadOrderList('2');
+            }
+            if (panelId === 'completed') {
+                loadOrderList('3');
+            }
+            if (panelId === 'adminOrders') {
+                loadAdminOrderList();
+            }
+            if (panelId === 'favorites') {
+                loadFavoriteList();
+            }
+        }
+
+        function loadOrderList(status) {
+            var url = status === 'all' 
+                ? '<?php echo APP_BASE ?>/public/index.php?pathinfo=user/order_list'
+                : '<?php echo APP_BASE ?>/public/index.php?pathinfo=user/order_list_by_status&status=' + status;
+            
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {
+                    var containerId = 'order-list-container';
+                    if (status === '0') containerId = 'order-pending-container';
+                    if (status === '2') {
+                        if (document.getElementById('content-received').style.display === 'block') {
+                            containerId = 'order-received-container';
+                        } else {
+                            containerId = 'order-shipped-container';
+                        }
+                    }
+                    if (status === '3') containerId = 'order-completed-container';
+
+                    var container = document.getElementById(containerId);
+                    if (!container) return;
+
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        var html = '<div class="order-list">';
+                        data.data.forEach(function(order) {
+                            var statusText = ['待付款', '已付款', '已发货', '已完成', '已取消'];
+                            var statusClass = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
+                            
+                            html += '<div class="order-card">';
+                            html += '<div class="order-header">';
+                            html += '<div class="order-info">';
+                            html += '<span class="order-sn">订单号：' + order.order_sn + '</span>';
+                            html += '<span class="order-time">' + (order.create_time || '') + '</span>';
+                            html += '</div>';
+                            html += '<span class="order-status ' + statusClass[order.status] + '">' + statusText[order.status] + '</span>';
+                            html += '</div>';
+
+                            if (order.goods_list && order.goods_list.length > 0) {
+                                html += '<div class="order-goods">';
+                                order.goods_list.forEach(function(goods) {
+                                    var imgPath = goods.goods_img ? goods.goods_img.split('/').pop() : 'default.jpg';
+                                    html += '<div class="order-goods-item">';
+                                    html += '<img src="<?php echo APP_BASE ?>/resources/images/goods/' + imgPath + '" ' +
+                                             'onerror="this.src=\'<?php echo APP_BASE ?>/resources/images/goods/default.jpg\'" ' +
+                                             'alt="' + goods.goods_name + '" class="order-goods-img">';
+                                    html += '<div class="order-goods-info">';
+                                    html += '<div class="order-goods-name">' + goods.goods_name + '</div>';
+                                    html += '<div class="order-goods-price">¥' + parseFloat(goods.goods_price).toFixed(2) + '</div>';
+                                    html += '<div class="order-goods-num">x' + goods.goods_num + '</div>';
+                                    html += '</div>';
+                                    html += '</div>';
+                                });
+                                html += '</div>';
+                            }
+
+                            html += '<div class="order-footer">';
+                            html += '<div class="order-total">合计：<span>¥' + parseFloat(order.total_amount).toFixed(2) + '</span></div>';
+                            html += '<div class="order-actions">';
+                            
+                            if (order.status === 0) {
+                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 1)">立即支付</button>';
+                                html += '<button class="order-btn cancel" onclick="updateOrderStatus(' + order.order_id + ', 4)">取消订单</button>';
+                            } else if (order.status === 1) {
+                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 2)">确认发货</button>';
+                            } else if (order.status === 2) {
+                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 3)">确认收货</button>';
+                            } else if (order.status === 3) {
+                                html += '<button class="order-btn disabled">交易完成</button>';
+                            }
+
+                            html += '</div></div></div>';
+                        });
+                        html += '</div>';
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = '<div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;text-align:center;color:#999;">暂无相关订单</div>';
+                    }
+                })
+                .catch(function(err) {
+                    console.error('加载订单失败:', err);
+                });
+        }
+
+        function updateOrderStatus(orderId, status) {
+            var confirmText = '';
+            if (status === 1) confirmText = '确认支付此订单？';
+            else if (status === 2) confirmText = '确认发货？';
+            else if (status === 3) confirmText = '确认收货？';
+            else if (status === 4) confirmText = '确认取消订单？';
+
+            if (!confirm(confirmText)) return;
+
+            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=user/update_order_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'order_id=' + orderId + '&status=' + status
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.code === 200) {
+                    showToast(data.msg);
+                    loadOrderList('all');
+                    loadOrderList('0');
+                    loadOrderList('2');
+                    loadOrderList('3');
+                } else {
+                    showToast(data.msg || '操作失败');
+                }
+            })
+            .catch(err => {
+                console.error('操作失败:', err);
+                showToast('网络错误');
+            });
         }
 
         // 加载我的商品列表
@@ -990,6 +1144,125 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                     console.error('删除地址失败:', err);
                     showToast('网络错误');
                 });
+        }
+
+        function loadAdminOrderList() {
+            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=user/admin_order_list')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        var html = '<div class="order-list">';
+                        data.data.forEach(function(order) {
+                            var statusText = ['待付款', '已付款', '已发货', '已完成', '已取消'];
+                            var statusClass = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
+                            
+                            html += '<div class="order-card">';
+                            html += '<div class="order-header">';
+                            html += '<div class="order-info">';
+                            html += '<span class="order-sn">订单号：' + order.order_sn + '</span>';
+                            html += '<span>用户：' + (order.username || '未知') + '</span>';
+                            html += '<span class="order-time">' + (order.create_time || '') + '</span>';
+                            html += '</div>';
+                            html += '<span class="order-status ' + statusClass[order.status] + '">' + statusText[order.status] + '</span>';
+                            html += '</div>';
+
+                            if (order.consignee) {
+                                html += '<div style="padding:10px;background:#f9f9f9;margin:10px 0;border-radius:4px;">';
+                                html += '<div>收货人：' + order.consignee + '</div>';
+                                html += '<div>电话：' + (order.phone || '') + '</div>';
+                                html += '<div>地址：' + (order.address || '') + '</div>';
+                                html += '</div>';
+                            }
+
+                            if (order.goods_list && order.goods_list.length > 0) {
+                                html += '<div class="order-goods">';
+                                order.goods_list.forEach(function(goods) {
+                                    var imgPath = goods.goods_img ? goods.goods_img.split('/').pop() : 'default.jpg';
+                                    html += '<div class="order-goods-item">';
+                                    html += '<img src="<?php echo APP_BASE ?>/resources/images/goods/' + imgPath + '" ' +
+                                             'onerror="this.src=\'<?php echo APP_BASE ?>/resources/images/goods/default.jpg\'" ' +
+                                             'alt="' + goods.goods_name + '" class="order-goods-img">';
+                                    html += '<div class="order-goods-info">';
+                                    html += '<div class="order-goods-name">' + goods.goods_name + '</div>';
+                                    html += '<div class="order-goods-price">¥' + parseFloat(goods.goods_price).toFixed(2) + '</div>';
+                                    html += '<div class="order-goods-num">x' + goods.goods_num + '</div>';
+                                    html += '</div></div>';
+                                });
+                                html += '</div>';
+                            }
+
+                            html += '<div class="order-footer">';
+                            html += '<div class="order-total">合计：<span>¥' + parseFloat(order.total_amount).toFixed(2) + '</span></div>';
+                            html += '<div class="order-actions">';
+                            
+                            if (order.status === 1) {
+                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 2)">确认发货</button>';
+                            }
+
+                            html += '</div></div></div>';
+                        });
+                        html += '</div>';
+                        document.getElementById('admin-order-list').innerHTML = html;
+                    } else {
+                        document.getElementById('admin-order-list').innerHTML = '<div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;text-align:center;color:#999;">暂无订单</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error('加载订单失败:', err);
+                });
+        }
+
+        function loadFavoriteList() {
+            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=favorite/list')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        var html = '<div class="my-goods-grid">';
+                        data.data.forEach(function(item) {
+                            var imgName = item.goods_img ? item.goods_img.split('/').pop() : 'default.jpg';
+                            html += '<div class="my-goods-card">' +
+                                '<img src="<?php echo APP_BASE ?>/resources/images/goods/' + imgName + '" ' +
+                                'onerror="this.src=\'<?php echo APP_BASE ?>/resources/images/goods/default.jpg\'" ' +
+                                'alt="' + item.goods_name + '" class="my-goods-card-img">' +
+                                '<div class="my-goods-card-body">' +
+                                '<div class="my-goods-card-name"><a href="<?php echo APP_BASE ?>/index/goods_detail?id=' + item.goods_id + '" style="color:#333;">' + item.goods_name + '</a></div>' +
+                                '<div class="my-goods-card-price">¥' + parseFloat(item.goods_price).toFixed(2) + '</div>' +
+                                '<button class="form-btn" style="margin-top:5px;padding:5px 10px;font-size:12px;background:#ff6b6b;" onclick="removeFavorite(' + item.goods_id + ', this)">取消收藏</button>' +
+                                '</div></div>';
+                        });
+                        html += '</div>';
+                        document.getElementById('favorite-list').innerHTML = html;
+                    } else {
+                        document.getElementById('favorite-list').innerHTML =
+                            '<div style="margin-top:30px;border:1px dashed #eee;padding:30px;border-radius:8px;text-align:center;color:#999;">' +
+                            '<p>暂无收藏商品</p>' +
+                            '</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error('加载收藏失败:', err);
+                });
+        }
+
+        function removeFavorite(goodsId, btn) {
+            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=favorite/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'goods_id=' + goodsId
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.code === 200) {
+                    showToast('取消收藏成功');
+                    btn.closest('.my-goods-card').remove();
+                } else {
+                    showToast(data.msg || '操作失败');
+                }
+            })
+            .catch(err => {
+                console.error('取消收藏失败:', err);
+                showToast('网络错误');
+            });
         }
     </script>
 </body>

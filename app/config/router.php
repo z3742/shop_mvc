@@ -34,13 +34,23 @@ return [
     'user/add_address'  => 'home/user/addAddress',
     'user/edit_address' => 'home/user/editAddress',
     'user/delete_address' => 'home/user/deleteAddress',
+    'user/order_list' => 'home/user/orderList',
+    'user/order_list_by_status' => 'home/user/orderListByStatus',
+    'user/order_detail' => 'home/user/orderDetail',
+    'user/update_order_status' => 'home/user/updateOrderStatus',
+    'user/admin_order_list' => 'home/user/adminOrderList',
 
     // 商品API
-    'goods/hot'     => 'home/goods/getHotGoods',
-    'goods/list'    => 'home/goods/getGoodsList',
-    'goods/detail'  => 'home/goods/getGoodsDetail',
-    'goods/search'  => 'home/goods/searchGoods',
-    'goods/delete'  => 'home/goods/deleteGoods',
+    'goods/hot'           => 'home/goods/getHotGoods',
+    'goods/list'          => 'home/goods/getGoodsList',
+    'goods/detail'        => 'home/goods/getGoodsDetail',
+    'goods/search'        => 'home/goods/searchGoods',
+    'goods/delete'        => 'home/goods/deleteGoods',
+    'goods/flash_sale'    => 'home/goods/getFlashSales',
+    'goods/hot_ranking'   => 'home/goods/getHotRanking',
+    'goods/recent_viewed' => 'home/goods/getRecentlyViewed',
+    'goods/add_view'      => 'home/goods/addView',
+    'goods/related'       => 'home/goods/getRelated',
 
     // 分类API
     'category/list' => 'home/category/index',
@@ -53,4 +63,17 @@ return [
     'cart/clear'   => 'home/cart/clear',
     'cart/count'   => 'home/cart/count',
     'cart/checkout' => 'home/cart/checkout',
+
+    // 评价API
+    'comment/add'    => 'home/comment/add',
+    'comment/list'   => 'home/comment/list',
+    'comment/rating' => 'home/comment/rating',
+    'comment/delete' => 'home/comment/delete',
+
+    // 收藏API
+    'favorite/add'    => 'home/favorite/add',
+    'favorite/remove' => 'home/favorite/remove',
+    'favorite/list'   => 'home/favorite/list',
+    'favorite/check'  => 'home/favorite/check',
+    'favorite/count'  => 'home/favorite/count',
 ];

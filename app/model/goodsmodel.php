@@ -237,4 +237,117 @@ class goodsmodel extends \framework\model
         $sql = "SELECT g.*, c.name AS cat_name FROM goods g LEFT JOIN category c ON g.cat_id=c.cat_id WHERE g.user_id=? ORDER BY g.goods_id DESC";
         return $this->db->fetchAll($sql, [$userId]);
     }
+
+    /**
+     * 获取热销排行榜商品（按销量降序）
+     * 
+     * @param int $limit 返回数量
+     * @return array 热销商品列表
+     */
+    public function getGoodsBySales($limit = 5)
+    {
+        $sql = "SELECT * FROM goods WHERE is_sale=1 AND status=1 ORDER BY sales DESC, goods_id DESC LIMIT ?";
+        return $this->db->fetchAll($sql, [$limit]);
+    }
+
+    /**
+     * 获取排序后的商品列表
+     * 
+     * 支持按价格升/降序、销量降序、最新排序
+     * 
+     * @param string $sort 排序方式: price_asc, price_desc, sales, default
+     * @param int $catId 分类ID，0为全部
+     * @param float $minPrice 最低价格
+     * @param float $maxPrice 最高价格
+     * @param int $limit 每页数量
+     * @param int $offset 偏移量
+     * @return array 商品列表
+     */
+    public function getGoodsSorted($sort = 'default', $catId = 0, $minPrice = null, $maxPrice = null, $limit = 12, $offset = 0)
+    {
+        $sql = "SELECT * FROM goods WHERE is_sale=1 AND status=1";
+        $params = [];
+
+        if ($catId > 0) {
+            $sql .= " AND cat_id=?";
+            $params[] = $catId;
+        }
+
+        if ($minPrice !== null && $minPrice > 0) {
+            $sql .= " AND goods_price >= ?";
+            $params[] = $minPrice;
+        }
+
+        if ($maxPrice !== null && $maxPrice > 0) {
+            $sql .= " AND goods_price <= ?";
+            $params[] = $maxPrice;
+        }
+
+        switch ($sort) {
+            case 'price_asc':
+                $sql .= " ORDER BY goods_price ASC";
+                break;
+            case 'price_desc':
+                $sql .= " ORDER BY goods_price DESC";
+                break;
+            case 'sales':
+                $sql .= " ORDER BY sales DESC, goods_id DESC";
+                break;
+            default:
+                $sql .= " ORDER BY goods_id DESC";
+                break;
+        }
+
+        $sql .= " LIMIT ? OFFSET ?";
+        $params[] = $limit;
+        $params[] = $offset;
+
+        return $this->db->fetchAll($sql, $params);
+    }
+
+    /**
+     * 获取排序后的商品总数
+     * 
+     * @param int $catId 分类ID
+     * @param float $minPrice 最低价格
+     * @param float $maxPrice 最高价格
+     * @return int 商品数量
+     */
+    public function getGoodsSortedCount($catId = 0, $minPrice = null, $maxPrice = null)
+    {
+        $sql = "SELECT COUNT(*) as total FROM goods WHERE is_sale=1 AND status=1";
+        $params = [];
+
+        if ($catId > 0) {
+            $sql .= " AND cat_id=?";
+            $params[] = $catId;
+        }
+
+        if ($minPrice !== null && $minPrice > 0) {
+            $sql .= " AND goods_price >= ?";
+            $params[] = $minPrice;
+        }
+
+        if ($maxPrice !== null && $maxPrice > 0) {
+            $sql .= " AND goods_price <= ?";
+            $params[] = $maxPrice;
+        }
+
+        $result = $this->db->fetchRow($sql, $params);
+        return $result['total'] ?? 0;
+    }
+
+    /**
+     * 获取相关推荐商品（同分类，排除当前商品）
+     * 
+     * @param int $catId 分类ID
+     * @param int $excludeId 要排除的商品ID
+     * @param int $limit 返回数量
+     * @return array 相关商品列表
+     */
+    public function getRelatedGoods($catId, $excludeId, $limit = 4)
+    {
+        $sql = "SELECT * FROM goods WHERE is_sale=1 AND status=1 AND cat_id=? AND goods_id!=? ORDER BY sales DESC, RAND() LIMIT ?";
+        return $this->db->fetchAll($sql, [$catId, $excludeId, $limit]);
+    }
 }

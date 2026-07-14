@@ -7,6 +7,18 @@ $goodsList = isset($goodsList) ? $goodsList : [];
 $totalPages = isset($totalPages) ? $totalPages : 1;
 $page = isset($page) ? $page : 1;
 $catId = isset($catId) ? $catId : 0;
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'default';
+$minPrice = isset($_GET['min_price']) ? $_GET['min_price'] : '';
+$maxPrice = isset($_GET['max_price']) ? $_GET['max_price'] : '';
+
+// 构建分页URL参数
+$queryParams = [];
+if ($catId > 0) $queryParams['cat_id'] = $catId;
+if ($sort != 'default') $queryParams['sort'] = $sort;
+if ($minPrice !== '') $queryParams['min_price'] = $minPrice;
+if ($maxPrice !== '') $queryParams['max_price'] = $maxPrice;
+$queryStr = http_build_query($queryParams);
+$prefix = $queryStr ? '&' . $queryStr : '';
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -91,8 +103,26 @@ $catId = isset($catId) ? $catId : 0;
                     <span class="title-icon">🎁</span>
                     <span><?= htmlspecialchars($category['cat_name'] ?? '全部商品') ?></span>
                 </div>
-                <span style="color:#999;font-size:14px;">共 <?= $total ?> 件商品</span>
+                <span style="color:var(--text-muted);font-size:14px;">共 <?= $total ?> 件商品</span>
             </div>
+
+            <!-- 排序栏 -->
+            <div class="sort-bar">
+                <span class="sort-bar-label">排序方式：</span>
+                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>" class="sort-btn <?= $sort == 'default' ? 'active' : '' ?>">综合</a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&sort=sales" class="sort-btn <?= $sort == 'sales' ? 'active' : '' ?>">销量优先</a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&sort=price_asc" class="sort-btn <?= $sort == 'price_asc' ? 'active' : '' ?>">价格 <span class="sort-arrow">↓</span></a>
+                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&sort=price_desc" class="sort-btn <?= $sort == 'price_desc' ? 'active' : '' ?>">价格 <span class="sort-arrow">↑</span></a>
+
+                <!-- 价格筛选 -->
+                <div class="price-filter">
+                    <input type="number" id="min-price" placeholder="最低价" value="<?= htmlspecialchars($minPrice) ?>" min="0">
+                    <span style="color:var(--text-muted);">-</span>
+                    <input type="number" id="max-price" placeholder="最高价" value="<?= htmlspecialchars($maxPrice) ?>" min="0">
+                    <button id="price-filter-btn">筛选</button>
+                </div>
+            </div>
+
             <div class="goods-grid">
                 <?php foreach ($goodsList as $goods): ?>
                     <div class="goods-card">
@@ -109,6 +139,9 @@ $catId = isset($catId) ? $catId : 0;
                                 <div class="goods-title-text"><?= htmlspecialchars($goods['goods_name']) ?></div>
                                 <div class="goods-price-info">
                                     <span class="price">¥<?= number_format($goods['goods_price'], 2) ?></span>
+                                    <?php if (!empty($goods['sales'])): ?>
+                                        <span class="goods-sales-text">已售<?= $goods['sales'] ?></span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </a>
@@ -116,16 +149,17 @@ $catId = isset($catId) ? $catId : 0;
                     </div>
                 <?php endforeach; ?>
             </div>
+
             <?php if ($totalPages > 1): ?>
                 <div class="page-box">
                     <?php if ($page > 1): ?>
-                        <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&page=<?= $page - 1 ?>">上一页</a>
+                        <a href="<?php echo APP_BASE ?>/index/goods_list?page=<?= $page - 1 ?><?= $prefix ?>">上一页</a>
                     <?php endif; ?>
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&page=<?= $i ?>" <?= $i == $page ? 'class="active"' : '' ?>><?= $i ?></a>
+                        <a href="<?php echo APP_BASE ?>/index/goods_list?page=<?= $i ?><?= $prefix ?>" <?= $i == $page ? 'class="active"' : '' ?>><?= $i ?></a>
                     <?php endfor; ?>
                     <?php if ($page < $totalPages): ?>
-                        <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&page=<?= $page + 1 ?>">下一页</a>
+                        <a href="<?php echo APP_BASE ?>/index/goods_list?page=<?= $page + 1 ?><?= $prefix ?>">下一页</a>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
@@ -134,8 +168,8 @@ $catId = isset($catId) ? $catId : 0;
         <div class="sidebar-right">
             <h3 class="sidebar-title">🔥 热门推荐</h3>
             <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">人气单品</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">限时特惠</a></li>
+                <li><a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales">人气单品</a></li>
+                <li><a href="<?php echo APP_BASE ?>/index/goods_list?sort=price_asc">低价好物</a></li>
                 <li><a href="<?php echo APP_BASE ?>/index/goods_list">新品上架</a></li>
             </ul>
             <h3 class="sidebar-title" style="margin-top:20px;">👤 个人中心</h3>
@@ -147,19 +181,43 @@ $catId = isset($catId) ? $catId : 0;
     </div>
 
     <div class="footer">
-        <p>热卖商城 &copy;2026 版权所有 | 客服热线：00-123-4567 | 地址：线上电商产业园</p>
+        <p>热卖商城 &copy;2026 版权所有 | 客服热线：400-123-4567 | 地址：线上电商产业园</p>
     </div>
+
+    <button class="theme-toggle" id="theme-toggle" title="切换深色/浅色模式">🌙</button>
     <div class="back-top">↑</div>
     <div class="toast" id="toast"></div>
 
     <script>
+        /* 主题切换 */
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀';
+            }
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀';
+                }
+            });
+        })();
+
         const loader = document.querySelector('.loader');
         const mainBoxes = document.querySelectorAll('.main-content');
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hide');
                 mainBoxes.forEach(box => box.classList.add('show'));
-            }, 1200);
+            }, 800);
             fetchCartCount();
         });
 
@@ -175,13 +233,7 @@ $catId = isset($catId) ? $catId : 0;
                 .then(r => r.text())
                 .then(text => {
                     let data;
-                    try {
-                        data = JSON.parse(text);
-                    } catch (e) {
-                        console.error('解析JSON失败:', text);
-                        return;
-                    }
-
+                    try { data = JSON.parse(text); } catch (e) { return; }
                     if (data.code === 200) {
                         document.querySelectorAll('.cart-count, .cart-num').forEach(el => {
                             el.innerText = data.cart_count;
@@ -190,15 +242,22 @@ $catId = isset($catId) ? $catId : 0;
                 });
         }
 
+        /* 价格筛选 */
+        document.getElementById('price-filter-btn').addEventListener('click', function() {
+            const minPrice = document.getElementById('min-price').value;
+            const maxPrice = document.getElementById('max-price').value;
+            let url = '<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $catId ?>&sort=<?= $sort ?>';
+            if (minPrice) url += '&min_price=' + minPrice;
+            if (maxPrice) url += '&max_price=' + maxPrice;
+            window.location.href = url;
+        });
+
         const backTop = document.querySelector('.back-top');
         window.addEventListener('scroll', () => {
             backTop.style.display = document.documentElement.scrollTop > 300 ? 'block' : 'none';
         });
         backTop.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
         const headCart = document.getElementById('head-cart');
@@ -206,21 +265,21 @@ $catId = isset($catId) ? $catId : 0;
         cartFloatBox.className = 'cart-float-box';
         cartFloatBox.id = 'cart-float-box';
         cartFloatBox.innerHTML = `
-    <div class="cart-float-header">
-        <h3>我的购物车</h3>
-        <span class="cart-float-close" id="cart-float-close">×</span>
-    </div>
-    <div class="cart-float-content" id="cart-float-content">
-        <div class="cart-float-empty">购物车为空</div>
-    </div>
-    <div class="cart-float-footer">
-        <div class="cart-float-total">
-            <span>合计:</span>
-            <span class="cart-float-price">¥ 0.00</span>
-        </div>
-        <a href="<?php echo APP_BASE ?>/index/cart" class="cart-float-btn">去结算</a>
-    </div>
-`;
+            <div class="cart-float-header">
+                <h3>我的购物车</h3>
+                <span class="cart-float-close" id="cart-float-close">×</span>
+            </div>
+            <div class="cart-float-content" id="cart-float-content">
+                <div class="cart-float-empty">购物车为空</div>
+            </div>
+            <div class="cart-float-footer">
+                <div class="cart-float-total">
+                    <span>合计:</span>
+                    <span class="cart-float-price">¥ 0.00</span>
+                </div>
+                <a href="<?php echo APP_BASE ?>/index/cart" class="cart-float-btn">去结算</a>
+            </div>
+        `;
         document.body.appendChild(cartFloatBox);
 
         const overlay = document.createElement('div');
@@ -238,9 +297,7 @@ $catId = isset($catId) ? $catId : 0;
                 if (target.classList.contains('cart-float-del')) {
                     e.stopPropagation();
                     const cartId = target.getAttribute('data-cart-id');
-                    if (cartId) {
-                        deleteCartItem(cartId);
-                    }
+                    if (cartId) deleteCartItem(cartId);
                 }
             });
         }
@@ -254,18 +311,18 @@ $catId = isset($catId) ? $catId : 0;
                             let html = '';
                             data.data.forEach(item => {
                                 html += `
-                        <div class="cart-float-item" data-cart-id="${item.cart_id}" style="position:relative;">
-                            <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}" 
-                                 onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                 alt="${item.goods_name}">
-                            <div class="cart-float-item-info">
-                                <div class="cart-float-item-name">${item.goods_name}</div>
-                                <div class="cart-float-item-price">¥${(item.goods_price * item.goods_num).toFixed(2)}</div>
-                                <div class="cart-float-item-num">x${item.goods_num}</div>
-                            </div>
-                            <span class="cart-float-del" data-cart-id="${item.cart_id}" style="cursor:pointer;position:absolute;top:5px;right:5px;color:#999;font-size:18px;font-weight:bold;z-index:10;display:inline-block;width:20px;height:20px;line-height:18px;text-align:center;">×</span>
-                        </div>
-                    `;
+                                    <div class="cart-float-item" data-cart-id="${item.cart_id}">
+                                        <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}"
+                                             onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                             alt="${item.goods_name}">
+                                        <div class="cart-float-item-info">
+                                            <div class="cart-float-item-name">${item.goods_name}</div>
+                                            <div class="cart-float-item-price">¥${(item.goods_price * item.goods_num).toFixed(2)}</div>
+                                            <div class="cart-float-item-num">x${item.goods_num}</div>
+                                        </div>
+                                        <span class="cart-float-del" data-cart-id="${item.cart_id}">×</span>
+                                    </div>
+                                `;
                             });
                             cartFloatContent.innerHTML = html;
                             cartFloatPrice.innerText = '¥' + data.total.toFixed(2);
@@ -277,30 +334,24 @@ $catId = isset($catId) ? $catId : 0;
                         cartFloatContent.innerHTML = '<div class="cart-float-empty"><a href="<?php echo APP_BASE ?>/index/login">请先登录查看购物车</a></div>';
                         cartFloatPrice.innerText = '¥ 0.00';
                     }
-                }).catch(err => {
-                    console.error('加载购物车失败', err);
-                });
+                }).catch(err => console.error('加载购物车失败', err));
         }
 
         function deleteCartItem(cartId) {
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'cart_id=' + cartId
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.code === 200) {
-                        document.getElementById('cart-num').innerText = data.cart_count || 0;
-                        document.querySelectorAll('.cart-count').forEach(el => {
-                            el.innerText = data.cart_count || 0;
-                        });
-                        loadCartData();
-                        showToast('删除成功');
-                    }
-                });
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'cart_id=' + cartId
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.code === 200) {
+                    document.getElementById('cart-num').innerText = data.cart_count || 0;
+                    document.querySelectorAll('.cart-count').forEach(el => el.innerText = data.cart_count || 0);
+                    loadCartData();
+                    showToast('删除成功');
+                }
+            });
         }
 
         headCart.addEventListener('click', () => {
@@ -308,12 +359,10 @@ $catId = isset($catId) ? $catId : 0;
             cartFloatBox.classList.add('show');
             overlay.classList.add('show');
         });
-
         cartFloatClose.addEventListener('click', () => {
             cartFloatBox.classList.remove('show');
             overlay.classList.remove('show');
         });
-
         overlay.addEventListener('click', () => {
             cartFloatBox.classList.remove('show');
             overlay.classList.remove('show');

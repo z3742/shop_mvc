@@ -134,6 +134,13 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                         </tr>
                     <?php endforeach; ?>
                 </table>
+                <div class="cart-address" style="margin-top:20px;padding:20px;background:#f9f9f9;border-radius:8px;">
+                    <h4 style="margin-bottom:15px;">选择收货地址</h4>
+                    <div id="address-list-cart">
+                        <div style="color:#999;padding:10px;">正在加载收货地址...</div>
+                    </div>
+                    <button class="form-btn" style="width:auto;padding:5px 15px;font-size:12px;margin-top:10px;" onclick="showAddAddressModal()">+ 添加新地址</button>
+                </div>
                 <div class="cart-sum">
                     <span class="sum-price">商品总金额：¥<?= number_format($cartTotal, 2) ?></span>
                     <button class="form-btn" style="width:120px;" id="checkout-btn">确认结算下单</button>
@@ -190,6 +197,47 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
     <!-- 遮罩层 -->
     <div class="overlay" id="overlay"></div>
 
+    <div class="modal" id="address-modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">添加收货地址</h3>
+                <span class="modal-close" onclick="closeAddressModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="address-form">
+                    <input type="hidden" id="addr_id" name="addr_id">
+                    <div class="form-item">
+                        <label>收货人：</label>
+                        <input type="text" id="consignee" name="consignee" placeholder="请输入收货人姓名" required>
+                    </div>
+                    <div class="form-item">
+                        <label>联系电话：</label>
+                        <input type="tel" id="phone" name="phone" placeholder="请输入联系电话" required>
+                    </div>
+                    <div class="form-item">
+                        <label>省：</label>
+                        <input type="text" id="province" name="province" placeholder="省份">
+                    </div>
+                    <div class="form-item">
+                        <label>市：</label>
+                        <input type="text" id="city" name="city" placeholder="城市">
+                    </div>
+                    <div class="form-item">
+                        <label>区：</label>
+                        <input type="text" id="district" name="district" placeholder="区/县">
+                    </div>
+                    <div class="form-item">
+                        <label>详细地址：</label>
+                        <textarea id="detail_addr" name="detail_addr" rows="3" placeholder="请输入详细地址" required></textarea>
+                    </div>
+                    <div class="form-item">
+                        <button type="submit" class="form-btn">保存地址</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="back-top">↑</div>
     <div class="toast" id="toast"></div>
 
@@ -201,6 +249,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                 loader.classList.add('hide');
                 mainBoxes.forEach(box => box.classList.add('show'));
             }, 1200);
+            loadAddressList();
         });
 
         function showToast(text) {
@@ -408,8 +457,99 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
             overlay.classList.remove('show');
         });
 
+        let selectedAddrId = 0;
+
+        function loadAddressList() {
+            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=user/address_list')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.code === 200 && data.data && data.data.length > 0) {
+                        let html = '';
+                        data.data.forEach(item => {
+                            html += `
+                                <div class="address-item" style="padding:10px;border:2px solid ${selectedAddrId === item.addr_id ? '#e1251b' : '#eee'};border-radius:4px;margin-bottom:10px;cursor:pointer;" 
+                                     onclick="selectAddress(${item.addr_id})">
+                                    <div style="font-weight:bold;">${item.consignee} ${item.phone}</div>
+                                    <div style="color:#666;font-size:12px;">${item.province || ''}${item.city || ''}${item.district || ''}${item.detail_addr}</div>
+                                </div>
+                            `;
+                        });
+                        document.getElementById('address-list-cart').innerHTML = html;
+                        if (selectedAddrId === 0) {
+                            selectedAddrId = data.data[0].addr_id;
+                            loadAddressList();
+                        }
+                    } else {
+                        document.getElementById('address-list-cart').innerHTML = '<div style="color:#999;padding:10px;">暂无收货地址，请添加</div>';
+                    }
+                })
+                .catch(err => console.error('加载地址失败:', err));
+        }
+
+        function selectAddress(addrId) {
+            selectedAddrId = addrId;
+            loadAddressList();
+        }
+
+        function showAddAddressModal() {
+            document.getElementById('address-modal').style.display = 'flex';
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('addr_id').value = '';
+            document.getElementById('address-form').reset();
+        }
+
+        function closeAddressModal() {
+            document.getElementById('address-modal').style.display = 'none';
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        document.getElementById('address-form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const consignee = document.getElementById('consignee').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const province = document.getElementById('province').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const district = document.getElementById('district').value.trim();
+            const detailAddr = document.getElementById('detail_addr').value.trim();
+
+            if (!consignee || !phone || !detailAddr) {
+                showToast('请填写完整地址信息');
+                return;
+            }
+
+            const addrId = document.getElementById('addr_id').value;
+            const url = addrId ? '<?php echo APP_BASE ?>/public/index.php?pathinfo=user/edit_address' : '<?php echo APP_BASE ?>/public/index.php?pathinfo=user/add_address';
+            
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'addr_id=' + addrId + '&consignee=' + encodeURIComponent(consignee) + '&phone=' + encodeURIComponent(phone) + 
+                      '&province=' + encodeURIComponent(province) + '&city=' + encodeURIComponent(city) + 
+                      '&district=' + encodeURIComponent(district) + '&detail_addr=' + encodeURIComponent(detailAddr)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.code === 200) {
+                    showToast('保存成功');
+                    closeAddressModal();
+                    loadAddressList();
+                } else {
+                    showToast(data.msg || '保存失败');
+                }
+            })
+            .catch(err => {
+                console.error('保存地址失败:', err);
+                showToast('网络错误');
+            });
+        });
+
         // 确认结算下单
         document.getElementById('checkout-btn')?.addEventListener('click', () => {
+            if (selectedAddrId === 0) {
+                showToast('请先选择收货地址');
+                return;
+            }
+
             const checkoutBtn = document.getElementById('checkout-btn');
             checkoutBtn.disabled = true;
             checkoutBtn.textContent = '处理中...';
@@ -418,7 +558,8 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
-                    }
+                    },
+                    body: 'addr_id=' + selectedAddrId
                 })
                 .then(r => r.json())
                 .then(data => {
