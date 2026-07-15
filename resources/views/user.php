@@ -87,287 +87,362 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
         </div>
     </div>
 
-    <div class="main-layout main-content">
-        <div class="sidebar-left">
-            <div class="user-info-card">
-                <div class="user-avatar">
-                    <img src="<?php echo APP_BASE ?>/resources/images/avatar/default.png"
-                        onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjY2MwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MCIgcj0iMjAiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI5NSIgcng9IjM1IiByeT0iMjUiLz48L3N2Zz4='"
-                        alt="<?= htmlspecialchars($_SESSION['username'] ?? '用户') ?>">
-                </div>
-                <div class="user-info">
-                    <div class="user-name"><?= htmlspecialchars($_SESSION['username'] ?? '未登录') ?></div>
-                    <div class="user-type"><?php echo $isAdmin ? '管理员' : '普通用户' ?></div>
-                </div>
-            </div>
-            <h3 class="sidebar-title"><i class="bi bi-person-circle me-1"></i> 个人中心</h3>
-            <ul class="sidebar-list user-menu" id="user-menu">
-                <li class="active"><a href="#orders" onclick="switchMenu(this, 'orders')">我的订单</a></li>
-                <li><a href="#pending" onclick="switchMenu(this, 'pending')">待付款</a></li>
-                <li><a href="#shipped" onclick="switchMenu(this, 'shipped')">待发货</a></li>
-                <li><a href="#received" onclick="switchMenu(this, 'received')">待收货</a></li>
-                <li><a href="#completed" onclick="switchMenu(this, 'completed')">已完成</a></li>
-            </ul>
-
-            <?php if (!$isAdmin): ?>
-                <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-box-seam me-1"></i> 商品管理</h3>
-                <ul class="sidebar-list" id="goods-menu">
-                    <li><a href="#addGoods" onclick="switchMenu(this, 'addGoods')">上架商品</a></li>
-                    <li><a href="#myGoods" onclick="switchMenu(this, 'myGoods')">我的商品</a></li>
-                </ul>
-            <?php endif; ?>
-
-            <?php if ($isAdmin): ?>
-                <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-gear me-1"></i> 管理中心</h3>
-                <ul class="sidebar-list admin-menu" id="admin-menu">
-                    <li><a href="#audit" onclick="switchMenu(this, 'audit')">商品审核</a></li>
-                    <li><a href="#adminOrders" onclick="switchMenu(this, 'adminOrders')">订单管理</a></li>
-                    <li><a href="#userManage" onclick="switchMenu(this, 'userManage')">用户管理</a></li>
-                </ul>
-            <?php endif; ?>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-heart me-1"></i> 我的收藏</h3>
-            <ul class="sidebar-list" id="favorite-menu">
-                <li><a href="#favorites" onclick="switchMenu(this, 'favorites')">我的收藏</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-gear-wide-connected me-1"></i> 账户设置</h3>
-            <ul class="sidebar-list" id="account-menu">
-                <li><a href="#address" onclick="switchMenu(this, 'address')">收货地址管理</a></li>
-                <li><a href="#password" onclick="switchMenu(this, 'password')">修改登录密码</a></li>
-                <li><a href="#phone" onclick="switchMenu(this, 'phone')">绑定手机号</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/logout">退出当前账号</a></li>
-            </ul>
-        </div>
-
-        <div class="content-middle">
-            <div id="content-orders" class="content-panel">
-                <div class="goods-title">我的订单</div>
-                <div id="order-list-container">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                        正在加载订单...
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-pending" class="content-panel" style="display:none;">
-                <div class="goods-title">待付款订单</div>
-                <div id="order-pending-container">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
-                </div>
-            </div>
-
-            <div id="content-shipped" class="content-panel" style="display:none;">
-                <div class="goods-title">待发货订单</div>
-                <div id="order-shipped-container">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
-                </div>
-            </div>
-
-            <div id="content-received" class="content-panel" style="display:none;">
-                <div class="goods-title">待收货订单</div>
-                <div id="order-received-container">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
-                </div>
-            </div>
-
-            <div id="content-completed" class="content-panel" style="display:none;">
-                <div class="goods-title">已完成订单</div>
-                <div id="order-completed-container">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载...</div>
-                </div>
-            </div>
-
-            <div id="content-addGoods" class="content-panel" style="display:none;">
-                <div class="goods-title">上架商品</div>
-                <div id="goods-error-msg" style="color:#e1251b;text-align:center;margin-bottom:10px;display:none;"></div>
-                <form id="add-goods-form" enctype="multipart/form-data">
-                    <div class="form-item">
-                        <label>商品名称：</label>
-                        <input type="text" id="goods_name" name="goods_name" placeholder="请输入商品名称" required>
-                    </div>
-                    <div class="form-item">
-                        <label>商品价格：</label>
-                        <input type="number" id="goods_price" name="goods_price" placeholder="请输入商品价格" step="0.01" min="0" required>
-                    </div>
-                    <div class="form-item">
-                        <label>库存数量：</label>
-                        <input type="number" id="stock" name="stock" placeholder="请输入库存数量" min="1" value="100">
-                    </div>
-                    <div class="form-item">
-                        <label>商品分类：</label>
-                        <select id="cat_id" name="cat_id">
-                            <option value="1">手机数码</option>
-                            <option value="2">美妆护肤</option>
-                            <option value="3">生活工具</option>
-                            <option value="4">数码配件</option>
-                            <option value="5">内衣服饰</option>
-                            <option value="6">工具用品</option>
-                            <option value="7">其他商品</option>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <label>商品图片：</label>
-                        <input type="file" id="goods_img" name="goods_img" accept="image/jpeg,image/png,image/gif">
-                        <p style="color:#666;font-size:12px;margin-top:5px;">支持jpg、jpeg、png、gif格式</p>
-                    </div>
-                    <div class="form-item">
-                        <label>商品描述：</label>
-                        <textarea id="goods_desc" name="goods_desc" rows="5" placeholder="请输入商品描述"></textarea>
-                    </div>
-                    <div class="form-item">
-                        <button type="submit" class="form-btn" id="submit-goods-btn">提交审核</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="content-myGoods" class="content-panel" style="display:none;">
-                <div class="goods-title">我的商品</div>
-                <div id="my-goods-list">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:30px;border-radius:8px;text-align:center;color:#999;">
-                        <p>暂无上架商品</p>
-                        <a href="#addGoods" onclick="switchMenu(null, 'addGoods')" class="form-btn" style="margin-top:15px;display:inline-block;width:auto;padding:10px 24px;">去上架商品</a>
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-audit" class="content-panel" style="display:none;">
-                <div class="goods-title">商品审核</div>
-                <div class="audit-stats">
-                    <div class="stat-card pending">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-info">
-                            <div class="stat-count" id="stat-pending">0</div>
-                            <div class="stat-label">待审核</div>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="row">
+            <!-- 左侧导航 -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto rounded-full bg-gray-100 overflow-hidden mb-3">
+                            <img src="<?php echo APP_BASE ?>/resources/images/avatar/default.png"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjY2MwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI0MCIgcj0iMjAiLz48ZWxsaXBzZSBjeD0iNTAiIGN5PSI5NSIgcng9IjM1IiByeT0iMjUiLz48L3N2Zz4='"
+                                 alt="<?= htmlspecialchars($_SESSION['username'] ?? '用户') ?>"
+                                 class="w-full h-full object-cover">
                         </div>
+                        <h4 class="font-bold text-dark"><?= htmlspecialchars($_SESSION['username'] ?? '未登录') ?></h4>
+                        <span class="text-sm text-gray-500"><?php echo $isAdmin ? '管理员' : '普通用户' ?></span>
                     </div>
-                    <div class="stat-card approved">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-info">
-                            <div class="stat-count" id="stat-approved">0</div>
-                            <div class="stat-label">已通过</div>
+                </div>
+
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-person-circle me-2"></i>个人中心</h4>
+                    <ul class="list-unstyled" id="user-menu">
+                        <li class="mb-1"><a href="#orders" onclick="switchMenu(this, 'orders')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors active-link"><i class="bi bi-receipt me-2"></i>我的订单</a></li>
+                        <li class="mb-1"><a href="#pending" onclick="switchMenu(this, 'pending')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-clock me-2"></i>待付款</a></li>
+                        <li class="mb-1"><a href="#shipped" onclick="switchMenu(this, 'shipped')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-truck me-2"></i>待发货</a></li>
+                        <li class="mb-1"><a href="#received" onclick="switchMenu(this, 'received')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-box-seam me-2"></i>待收货</a></li>
+                        <li><a href="#completed" onclick="switchMenu(this, 'completed')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-check-circle me-2"></i>已完成</a></li>
+                    </ul>
+                </div>
+
+                <?php if (!$isAdmin): ?>
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-box-seam me-2"></i>商品管理</h4>
+                    <ul class="list-unstyled" id="goods-menu">
+                        <li class="mb-1"><a href="#addGoods" onclick="switchMenu(this, 'addGoods')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-plus-circle me-2"></i>上架商品</a></li>
+                        <li><a href="#myGoods" onclick="switchMenu(this, 'myGoods')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-grid me-2"></i>我的商品</a></li>
+                    </ul>
+                </div>
+                <?php endif; ?>
+
+                <?php if ($isAdmin): ?>
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-gear me-2"></i>管理中心</h4>
+                    <ul class="list-unstyled" id="admin-menu">
+                        <li class="mb-1"><a href="#audit" onclick="switchMenu(this, 'audit')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-file-check me-2"></i>商品审核</a></li>
+                        <li class="mb-1"><a href="#adminOrders" onclick="switchMenu(this, 'adminOrders')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-clipboard-list me-2"></i>订单管理</a></li>
+                        <li><a href="#userManage" onclick="switchMenu(this, 'userManage')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-people me-2"></i>用户管理</a></li>
+                    </ul>
+                </div>
+                <?php endif; ?>
+
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-heart me-2"></i>我的收藏</h4>
+                    <ul class="list-unstyled" id="favorite-menu">
+                        <li><a href="#favorites" onclick="switchMenu(this, 'favorites')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-heart-fill me-2"></i>我的收藏</a></li>
+                    </ul>
+                </div>
+
+                <div class="glass-card rounded-xl p-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-gear-wide-connected me-2"></i>账户设置</h4>
+                    <ul class="list-unstyled" id="account-menu">
+                        <li class="mb-1"><a href="#address" onclick="switchMenu(this, 'address')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-map-pin me-2"></i>收货地址</a></li>
+                        <li class="mb-1"><a href="#password" onclick="switchMenu(this, 'password')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-lock me-2"></i>修改密码</a></li>
+                        <li class="mb-1"><a href="#phone" onclick="switchMenu(this, 'phone')" class="block p-2 rounded-lg hover:bg-gray-100 text-dark transition-colors"><i class="bi bi-phone me-2"></i>绑定手机</a></li>
+                        <li><a href="<?php echo APP_BASE ?>/index/logout" class="block p-2 rounded-lg hover:bg-red-50 text-danger transition-colors"><i class="bi bi-box-arrow-right me-2"></i>退出登录</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 中间内容区 -->
+            <div class="col-lg-7">
+                <div id="content-orders" class="content-panel">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-receipt me-2"></i>我的订单</h3>
                         </div>
-                    </div>
-                    <div class="stat-card rejected">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-info">
-                            <div class="stat-count" id="stat-rejected">0</div>
-                            <div class="stat-label">已拒绝</div>
+                        <div class="card-body">
+                            <div id="order-list-container">
+                                <div class="text-center text-gray-400 py-8">正在加载订单...</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="audit-list">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                        暂无待审核商品
+
+                <div id="content-pending" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-clock me-2"></i>待付款订单</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="order-pending-container">
+                                <div class="text-center text-gray-400 py-8">正在加载...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-shipped" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-truck me-2"></i>待发货订单</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="order-shipped-container">
+                                <div class="text-center text-gray-400 py-8">正在加载...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-received" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-box-seam me-2"></i>待收货订单</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="order-received-container">
+                                <div class="text-center text-gray-400 py-8">正在加载...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-completed" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-check-circle me-2"></i>已完成订单</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="order-completed-container">
+                                <div class="text-center text-gray-400 py-8">正在加载...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-addGoods" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-plus-circle me-2"></i>上架商品</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="goods-error-msg" class="text-danger text-center mb-3" style="display:none;"></div>
+                            <form id="add-goods-form" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label">商品名称</label>
+                                    <input type="text" id="goods_name" name="goods_name" class="form-control bs-input" placeholder="请输入商品名称" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">商品价格</label>
+                                    <input type="number" id="goods_price" name="goods_price" class="form-control bs-input" placeholder="请输入商品价格" step="0.01" min="0" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">库存数量</label>
+                                    <input type="number" id="stock" name="stock" class="form-control bs-input" placeholder="请输入库存数量" min="1" value="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">商品分类</label>
+                                    <select id="cat_id" name="cat_id" class="form-control bs-input">
+                                        <option value="1">手机数码</option>
+                                        <option value="2">美妆护肤</option>
+                                        <option value="3">生活工具</option>
+                                        <option value="4">数码配件</option>
+                                        <option value="5">内衣服饰</option>
+                                        <option value="6">工具用品</option>
+                                        <option value="7">其他商品</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">商品图片</label>
+                                    <input type="file" id="goods_img" name="goods_img" class="form-control bs-input" accept="image/jpeg,image/png,image/gif">
+                                    <p class="text-sm text-gray-500 mt-1">支持jpg、jpeg、png、gif格式</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">商品描述</label>
+                                    <textarea id="goods_desc" name="goods_desc" class="form-control bs-input" rows="5" placeholder="请输入商品描述"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-gradient-primary" id="submit-goods-btn">提交审核</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-myGoods" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-grid me-2"></i>我的商品</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="my-goods-list">
+                                <div class="text-center text-gray-400 py-8">暂无上架商品</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-audit" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-file-check me-2"></i>商品审核</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-warning/10 rounded-xl p-4 text-center">
+                                        <div class="text-3xl mb-1">⏳</div>
+                                        <div class="text-xl font-bold text-warning" id="stat-pending">0</div>
+                                        <div class="text-sm text-gray-500">待审核</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-success/10 rounded-xl p-4 text-center">
+                                        <div class="text-3xl mb-1">✅</div>
+                                        <div class="text-xl font-bold text-success" id="stat-approved">0</div>
+                                        <div class="text-sm text-gray-500">已通过</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="stat-card bg-danger/10 rounded-xl p-4 text-center">
+                                        <div class="text-3xl mb-1">❌</div>
+                                        <div class="text-xl font-bold text-danger" id="stat-rejected">0</div>
+                                        <div class="text-sm text-gray-500">已拒绝</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="audit-list">
+                                <div class="text-center text-gray-400 py-8">暂无待审核商品</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-adminOrders" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-clipboard-list me-2"></i>订单管理</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="admin-order-list">
+                                <div class="text-center text-gray-400 py-8">正在加载订单...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-favorites" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-heart-fill me-2"></i>我的收藏</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="favorite-list">
+                                <div class="text-center text-gray-400 py-8">正在加载收藏...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-userManage" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-people me-2"></i>用户管理</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center text-gray-400 py-8">用户管理功能开发中</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-address" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-map-pin me-2"></i>收货地址管理</h3>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-gradient-primary mb-4" onclick="showAddAddressForm()"><i class="bi bi-plus me-1"></i>添加新地址</button>
+                            <div id="address-list">
+                                <div class="text-center text-gray-400 py-8">暂无收货地址</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-password" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-lock me-2"></i>修改登录密码</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="pwd-error-msg" class="text-danger text-center mb-3" style="display:none;"></div>
+                            <form id="change-pwd-form">
+                                <div class="mb-3">
+                                    <label class="form-label">原密码</label>
+                                    <input type="password" id="old_pwd" class="form-control bs-input" placeholder="请输入原密码">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">新密码</label>
+                                    <input type="password" id="new_pwd" class="form-control bs-input" placeholder="请输入新密码">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">确认密码</label>
+                                    <input type="password" id="confirm_pwd" class="form-control bs-input" placeholder="请再次输入新密码">
+                                </div>
+                                <button type="submit" class="btn btn-gradient-primary">修改密码</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-phone" class="content-panel" style="display:none;">
+                    <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                        <div class="card-header bg-white border-0">
+                            <h3 class="font-bold text-dark"><i class="bi bi-phone me-2"></i>绑定手机号</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                                <span class="text-gray-500">当前手机号：</span>
+                                <span class="font-bold text-dark"><?= htmlspecialchars($userInfo['phone'] ?: '未绑定') ?></span>
+                            </div>
+                            <form id="bind-phone-form">
+                                <div class="mb-3">
+                                    <label class="form-label">手机号</label>
+                                    <input type="tel" id="bind-phone" name="phone" class="form-control bs-input" placeholder="请输入手机号">
+                                </div>
+                                <button type="submit" class="btn btn-gradient-primary">绑定</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 商品详情弹窗 -->
-            <div class="modal" id="audit-detail-modal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 id="audit-detail-title">商品详情</h3>
-                        <span class="modal-close" onclick="closeAuditDetail()">×</span>
-                    </div>
-                    <div class="modal-body">
-                        <div id="audit-detail-content"></div>
-                    </div>
+            <!-- 右侧边栏 -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-gift me-2"></i>我的优惠券</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>未使用优惠券(3张)</a></li>
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>已使用优惠券</a></li>
+                        <li><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>已过期优惠券</a></li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-award me-2"></i>积分中心</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-star me-1"></i>当前可用积分</a></li>
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-info-circle me-1"></i>积分获取规则</a></li>
+                        <li><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-gift me-1"></i>积分兑换礼品</a></li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-blue rounded-xl p-4 text-white">
+                    <h4 class="font-bold mb-3"><i class="bi bi-headset me-2"></i>客户服务</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/help" class="text-white/90 hover:text-white text-sm"><i class="bi bi-question-circle me-1"></i>帮助中心</a></li>
+                        <li class="mb-2"><a href="#" class="text-white/90 hover:text-white text-sm"><i class="bi bi-message-square me-1"></i>订单问题咨询</a></li>
+                        <li><a href="#" class="text-white/90 hover:text-white text-sm"><i class="bi bi-arrow-counterclockwise me-1"></i>售后退换货</a></li>
+                    </ul>
                 </div>
             </div>
-
-            <div id="content-adminOrders" class="content-panel" style="display:none;">
-                <div class="goods-title">订单管理</div>
-                <div id="admin-order-list">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载订单...</div>
-                </div>
-            </div>
-
-            <div id="content-favorites" class="content-panel" style="display:none;">
-                <div class="goods-title">我的收藏</div>
-                <div id="favorite-list">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">正在加载收藏...</div>
-                </div>
-            </div>
-
-            <div id="content-userManage" class="content-panel" style="display:none;">
-                <div class="goods-title">用户管理</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    用户管理功能开发中
-                </div>
-            </div>
-
-            <div id="content-address" class="content-panel" style="display:none;">
-                <div class="goods-title">收货地址管理</div>
-                <button class="form-btn" style="margin:20px 0;" onclick="showAddAddressForm()">+ 添加新地址</button>
-
-                <div id="address-list">
-                    <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                        暂无收货地址
-                    </div>
-                </div>
-            </div>
-
-            <div id="content-password" class="content-panel" style="display:none;">
-                <div class="goods-title">修改登录密码</div>
-                <div id="pwd-error-msg" style="color:#e1251b;text-align:center;margin-bottom:10px;display:none;"></div>
-                <form id="change-pwd-form">
-                    <div class="form-item">
-                        <label>原密码：</label>
-                        <input type="password" id="old_pwd" placeholder="请输入原密码">
-                    </div>
-                    <div class="form-item">
-                        <label>新密码：</label>
-                        <input type="password" id="new_pwd" placeholder="请输入新密码">
-                    </div>
-                    <div class="form-item">
-                        <label>确认密码：</label>
-                        <input type="password" id="confirm_pwd" placeholder="请再次输入新密码">
-                    </div>
-                    <div class="form-item">
-                        <button type="submit" class="form-btn">修改密码</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="content-phone" class="content-panel" style="display:none;">
-                <div class="goods-title">绑定手机号</div>
-                <div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">
-                    当前手机号：<?= htmlspecialchars($userInfo['phone'] ?: '未绑定') ?>
-                </div>
-                <form id="bind-phone-form" style="margin-top:20px;">
-                    <div class="form-item">
-                        <label>手机号：</label>
-                        <input type="tel" id="bind-phone" name="phone" placeholder="请输入手机号">
-                    </div>
-                    <div class="form-item">
-                        <button type="submit" class="form-btn">绑定</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="sidebar-right">
-            <h3 class="sidebar-title"><i class="bi bi-gift me-1"></i> 我的优惠券</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">未使用优惠券(3张)</a></li>
-                <li><a href="#">已使用优惠券</a></li>
-                <li><a href="#">已过期优惠券</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-award me-1"></i> 积分中心</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">当前可用积分</a></li>
-                <li><a href="#">积分获取规则</a></li>
-                <li><a href="#">积分兑换礼品</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-headset me-1"></i> 客户服务</h3>
-            <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/help">帮助中心</a></li>
-                <li><a href="#">订单问题咨询</a></li>
-                <li><a href="#">售后退换货</a></li>
-            </ul>
         </div>
     </div>
 
@@ -498,15 +573,12 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
 
         // 增强版菜单切换 - 支持高亮激活项
         function switchMenu(linkEl, panelId) {
-            // 清除所有菜单的active状态
-            document.querySelectorAll('.sidebar-left .sidebar-list li').forEach(li => {
-                li.classList.remove('active');
+            document.querySelectorAll('.col-lg-2 a').forEach(el => {
+                el.classList.remove('active-link', 'bg-primary-light/20', 'text-primary-light');
             });
-            // 设置当前菜单项为active
             if (linkEl) {
-                linkEl.parentElement.classList.add('active');
+                linkEl.classList.add('active-link', 'bg-primary-light/20', 'text-primary-light');
             }
-            // 切换内容面板
             showContent(panelId);
         }
 
@@ -574,59 +646,61 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                     if (!container) return;
 
                     if (data.code === 200 && data.data && data.data.length > 0) {
-                        var html = '<div class="order-list">';
+                        var html = '';
                         data.data.forEach(function(order) {
                             var statusText = ['待付款', '已付款', '已发货', '已完成', '已取消'];
-                            var statusClass = ['pending', 'paid', 'shipped', 'completed', 'cancelled'];
+                            var statusColors = ['bg-warning text-white', 'bg-info text-white', 'bg-primary text-white', 'bg-success text-white', 'bg-gray-400 text-white'];
                             
-                            html += '<div class="order-card">';
-                            html += '<div class="order-header">';
-                            html += '<div class="order-info">';
-                            html += '<span class="order-sn">订单号：' + order.order_sn + '</span>';
-                            html += '<span class="order-time">' + (order.create_time || '') + '</span>';
+                            html += '<div class="border border-gray-200 rounded-xl p-4 mb-3">';
+                            html += '<div class="d-flex justify-content-between align-items-center mb-3">';
+                            html += '<div>';
+                            html += '<span class="font-medium">订单号：' + order.order_sn + '</span>';
+                            html += '<span class="text-gray-400 text-sm ml-3">' + (order.create_time || '') + '</span>';
                             html += '</div>';
-                            html += '<span class="order-status ' + statusClass[order.status] + '">' + statusText[order.status] + '</span>';
+                            html += '<span class="badge ' + statusColors[order.status] + '">' + statusText[order.status] + '</span>';
                             html += '</div>';
 
                             if (order.goods_list && order.goods_list.length > 0) {
-                                html += '<div class="order-goods">';
                                 order.goods_list.forEach(function(goods) {
                                     var imgPath = goods.goods_img ? goods.goods_img.split('/').pop() : 'default.jpg';
-                                    html += '<div class="order-goods-item">';
+                                    html += '<div class="d-flex gap-3 mb-3">';
+                                    html += '<div class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200">';
                                     html += '<img src="<?php echo APP_BASE ?>/resources/images/goods/' + imgPath + '" ' +
                                              'onerror="this.src=\'<?php echo APP_BASE ?>/resources/images/goods/default.jpg\'" ' +
-                                             'alt="' + goods.goods_name + '" class="order-goods-img">';
-                                    html += '<div class="order-goods-info">';
-                                    html += '<div class="order-goods-name">' + goods.goods_name + '</div>';
-                                    html += '<div class="order-goods-price">¥' + parseFloat(goods.goods_price).toFixed(2) + '</div>';
-                                    html += '<div class="order-goods-num">x' + goods.goods_num + '</div>';
+                                             'alt="' + goods.goods_name + '" class="w-full h-full object-cover">';
+                                    html += '</div>';
+                                    html += '<div class="flex-1">';
+                                    html += '<div class="font-medium text-dark">' + goods.goods_name + '</div>';
+                                    html += '<div class="text-danger font-bold">¥' + parseFloat(goods.goods_price).toFixed(2) + '</div>';
+                                    html += '<div class="text-gray-500 text-sm">数量：x' + goods.goods_num + '</div>';
                                     html += '</div>';
                                     html += '</div>';
                                 });
-                                html += '</div>';
                             }
 
-                            html += '<div class="order-footer">';
-                            html += '<div class="order-total">合计：<span>¥' + parseFloat(order.total_amount).toFixed(2) + '</span></div>';
-                            html += '<div class="order-actions">';
+                            html += '<div class="d-flex justify-content-between align-items-center pt-3 border-t border-gray-100">';
+                            html += '<div class="text-lg">';
+                            html += '<span class="text-gray-500">合计：</span>';
+                            html += '<span class="text-danger font-bold">¥' + parseFloat(order.total_amount).toFixed(2) + '</span>';
+                            html += '</div>';
+                            html += '<div class="d-flex gap-2">';
                             
                             if (order.status === 0) {
-                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 1)">立即支付</button>';
-                                html += '<button class="order-btn cancel" onclick="updateOrderStatus(' + order.order_id + ', 4)">取消订单</button>';
+                                html += '<button class="btn btn-gradient-primary btn-sm" onclick="updateOrderStatus(' + order.order_id + ', 1)">立即支付</button>';
+                                html += '<button class="btn btn-outline-danger btn-sm" onclick="updateOrderStatus(' + order.order_id + ', 4)">取消订单</button>';
                             } else if (order.status === 1) {
-                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 2)">确认发货</button>';
+                                html += '<button class="btn btn-gradient-primary btn-sm" onclick="updateOrderStatus(' + order.order_id + ', 2)">确认发货</button>';
                             } else if (order.status === 2) {
-                                html += '<button class="order-btn" onclick="updateOrderStatus(' + order.order_id + ', 3)">确认收货</button>';
+                                html += '<button class="btn btn-gradient-success btn-sm" onclick="updateOrderStatus(' + order.order_id + ', 3)">确认收货</button>';
                             } else if (order.status === 3) {
-                                html += '<button class="order-btn disabled">交易完成</button>';
+                                html += '<button class="btn btn-success btn-sm disabled">交易完成</button>';
                             }
 
                             html += '</div></div></div>';
                         });
-                        html += '</div>';
                         container.innerHTML = html;
                     } else {
-                        container.innerHTML = '<div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;text-align:center;color:#999;">暂无相关订单</div>';
+                        container.innerHTML = '<div class="text-center text-gray-400 py-8">暂无相关订单</div>';
                     }
                 })
                 .catch(function(err) {
@@ -726,7 +800,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
 
                 const submitBtn = document.getElementById('submit-goods-btn');
                 submitBtn.disabled = true;
-                submitBtn.textContent = '提交中...';
+                submitBtn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>提交中...';
 
                 const formData = new FormData(this);
 
@@ -744,14 +818,14 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                             document.getElementById('goods-error-msg').style.display = 'block';
                         }
                         submitBtn.disabled = false;
-                        submitBtn.textContent = '提交审核';
+                        submitBtn.innerHTML = '提交审核';
                     })
                     .catch(err => {
                         console.error('提交商品错误:', err);
                         document.getElementById('goods-error-msg').textContent = '网络错误';
                         document.getElementById('goods-error-msg').style.display = 'block';
                         submitBtn.disabled = false;
-                        submitBtn.textContent = '提交审核';
+                        submitBtn.innerHTML = '提交审核';
                     });
             });
         }
@@ -761,31 +835,31 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                 .then(r => r.json())
                 .then(data => {
                     if (data.code === 200 && data.data && data.data.length > 0) {
-                        let html = '<table class="audit-table"><tr><th>商品图片</th><th>商品名称</th><th>价格</th><th>库存</th><th>分类</th><th>提交用户</th><th>提交时间</th><th>操作</th></tr>';
+                        let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>商品图片</th><th>商品名称</th><th>价格</th><th>库存</th><th>分类</th><th>提交用户</th><th>提交时间</th><th>操作</th></tr></thead><tbody>';
                         data.data.forEach(item => {
                             const imgPath = item.goods_img ? item.goods_img.split('/').pop() : 'default.jpg';
                             html += `<tr>
-                                <td><img src="<?php echo APP_BASE ?>/resources/images/goods/${imgPath}" 
+                                <td><div class="w-12 h-12 rounded-lg overflow-hidden"><img src="<?php echo APP_BASE ?>/resources/images/goods/${imgPath}" 
                                          onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                         alt="${item.goods_name}" class="audit-table-img"></td>
-                                <td>${item.goods_name}</td>
-                                <td>¥${item.goods_price}</td>
+                                         alt="${item.goods_name}" class="w-full h-full object-cover"></div></td>
+                                <td class="font-medium">${item.goods_name}</td>
+                                <td class="text-danger font-bold">¥${item.goods_price}</td>
                                 <td>${item.stock}</td>
                                 <td>${item.cat_name || '-'}</td>
                                 <td>${item.username || '未知'}</td>
                                 <td>${item.create_time || '-'}</td>
                                 <td>
-                                    <button class="audit-btn detail" onclick="showAuditDetail(${item.goods_id})">查看详情</button>
-                                    <button class="audit-btn" onclick="auditGoods(${item.goods_id}, 1)">通过</button>
-                                    <button class="audit-btn reject" onclick="auditGoods(${item.goods_id}, 2)">拒绝</button>
+                                    <button class="btn btn-outline-primary btn-sm me-1" onclick="showAuditDetail(${item.goods_id})"><i class="bi bi-eye"></i>查看</button>
+                                    <button class="btn btn-gradient-success btn-sm me-1" onclick="auditGoods(${item.goods_id}, 1)"><i class="bi bi-check"></i>通过</button>
+                                    <button class="btn btn-gradient-danger btn-sm" onclick="auditGoods(${item.goods_id}, 2)"><i class="bi bi-x"></i>拒绝</button>
                                 </td>
                             </tr>`;
                         });
-                        html += '</table>';
+                        html += '</tbody></table></div>';
                         document.getElementById('audit-list').innerHTML = html;
                         document.getElementById('stat-pending').innerText = data.data.length;
                     } else {
-                        document.getElementById('audit-list').innerHTML = '<div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">暂无待审核商品</div>';
+                        document.getElementById('audit-list').innerHTML = '<div class="text-center text-gray-400 py-8">暂无待审核商品</div>';
                         document.getElementById('stat-pending').innerText = '0';
                     }
                 })
@@ -1028,28 +1102,28 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                 .then(r => r.json())
                 .then(data => {
                     if (data.code === 200 && data.data && data.data.length > 0) {
-                        let html = '<div class="address-list-container">';
+                        let html = '<div class="row row-cols-1 g-3">';
                         data.data.forEach(item => {
                             html += `
-                                <div class="address-item">
-                                    <div class="address-header">
-                                        <span class="address-consignee">${item.consignee}</span>
-                                        <span class="address-phone">${item.phone}</span>
+                                <div class="col border border-gray-200 rounded-xl p-4">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <span class="font-bold text-dark">${item.consignee}</span>
+                                            <span class="text-gray-500 ml-2">${item.phone}</span>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editAddress(${item.addr_id})"><i class="bi bi-pencil"></i></button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAddress(${item.addr_id})"><i class="bi bi-trash"></i></button>
+                                        </div>
                                     </div>
-                                    <div class="address-detail">
-                                        ${item.province || ''}${item.city || ''}${item.district || ''}${item.detail_addr}
-                                    </div>
-                                    <div class="address-actions">
-                                        <button class="address-btn edit" onclick="editAddress(${item.addr_id})">编辑</button>
-                                        <button class="address-btn delete" onclick="deleteAddress(${item.addr_id})">删除</button>
-                                    </div>
+                                    <div class="text-gray-600 text-sm">${item.province || ''}${item.city || ''}${item.district || ''}${item.detail_addr}</div>
                                 </div>
                             `;
                         });
                         html += '</div>';
                         document.getElementById('address-list').innerHTML = html;
                     } else {
-                        document.getElementById('address-list').innerHTML = '<div style="margin-top:30px;border:1px dashed #eee;padding:20px;border-radius:8px;">暂无收货地址</div>';
+                        document.getElementById('address-list').innerHTML = '<div class="text-center text-gray-400 py-8">暂无收货地址</div>';
                     }
                 })
                 .catch(err => {
@@ -1061,7 +1135,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
             document.getElementById('modal-title').textContent = '添加收货地址';
             document.getElementById('address-form').reset();
             document.getElementById('addr_id').value = '';
-            document.getElementById('address-modal').classList.add('show');
+            document.getElementById('address-modal').style.display = 'flex';
             overlay.classList.add('show');
         }
 
@@ -1080,7 +1154,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
                             document.getElementById('city').value = address.city || '';
                             document.getElementById('district').value = address.district || '';
                             document.getElementById('detail_addr').value = address.detail_addr;
-                            document.getElementById('address-modal').classList.add('show');
+                            document.getElementById('address-modal').style.display = 'flex';
                             overlay.classList.add('show');
                         }
                     }
@@ -1091,7 +1165,7 @@ $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] == 1;
         }
 
         function closeAddressModal() {
-            document.getElementById('address-modal').classList.remove('show');
+            document.getElementById('address-modal').style.display = 'none';
             document.getElementById('address-form').reset();
             document.getElementById('addr_id').value = '';
             overlay.classList.remove('show');

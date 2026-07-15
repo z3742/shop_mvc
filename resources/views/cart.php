@@ -89,111 +89,147 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
         </div>
     </div>
 
-    <div class="main-layout main-content">
-        <!-- 左侧导航 -->
-        <div class="sidebar-left">
-            <h3 class="sidebar-title"><i class="bi bi-bag-heart me-1"></i> 快捷入口</h3>
-            <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/index">返回商城首页</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">继续选购商品</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/user">我的全部订单</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/user">商品收藏夹</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-clipboard-check me-1"></i> 购物须知</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">满99元全国包邮</a></li>
-                <li><a href="#">支持货到付款服务</a></li>
-                <li><a href="#">7天无理由退换货</a></li>
-                <li><a href="#">正品保证 假一赔十</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-bell me-1"></i> 售后服务</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">在线客服咨询</a></li>
-                <li><a href="#">物流进度查询</a></li>
-                <li><a href="#">售后问题反馈</a></li>
-            </ul>
-        </div>
-
-        <!-- 中间主要内容 -->
-        <div class="content-middle">
-            <div class="goods-title">我的购物车</div>
-            <?php if (empty($cartList)): ?>
-                <div class="cart-empty" style="text-align: center; padding: 60px 0;">
-                    <div style="font-size: 48px; margin-bottom: 15px;"><i class="bi bi-cart-x" style="color:var(--text-muted);"></i></div>
-                    <p style="color: #999; margin-bottom: 20px;">购物车空空如也</p>
-                    <a href="<?php echo APP_BASE ?>/index/goods_list" class="form-btn btn-bs-primary" style="display: inline-block; width: auto; padding: 10px 30px;"><i class="bi bi-bag me-1"></i>去选购</a>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="row">
+            <!-- 左侧导航 -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-bag-heart me-2"></i>快捷入口</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/index" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-arrow-left me-1"></i>返回商城首页</a></li>
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-shopping-bag me-1"></i>继续选购商品</a></li>
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/user" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-receipt me-1"></i>我的全部订单</a></li>
+                        <li><a href="<?php echo APP_BASE ?>/index/user" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-heart me-1"></i>商品收藏夹</a></li>
+                    </ul>
                 </div>
-            <?php else: ?>
-                <table class="cart-table">
-                    <tr>
-                        <th>商品图片</th>
-                        <th>商品名称</th>
-                        <th>单价</th>
-                        <th>购买数量</th>
-                        <th>小计金额</th>
-                        <th>操作</th>
-                    </tr>
-                    <?php foreach ($cartList as $item): ?>
-                        <tr data-cart-id="<?= $item['cart_id'] ?>">
-                            <td>
-                                <div class="cart-pic">
-                                    <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
-                                        onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                        alt="<?= htmlspecialchars($item['goods_name']) ?>">
-                                </div>
-                            </td>
-                            <td><a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>"><?= htmlspecialchars($item['goods_name']) ?></a></td>
-                            <td>¥<?= number_format($item['goods_price'], 2) ?></td>
-                            <td>
-                                <div class="cart-num-box">
-                                    <button class="num-minus" data-cart-id="<?= $item['cart_id'] ?>">-</button>
-                                    <input type="text" value="<?= $item['goods_num'] ?>" class="num-input">
-                                    <button class="num-plus" data-cart-id="<?= $item['cart_id'] ?>">+</button>
-                                </div>
-                            </td>
-                            <td class="sub-total">¥<?= number_format($item['goods_price'] * $item['goods_num'], 2) ?></td>
-                            <td><span class="cart-del" data-cart-id="<?= $item['cart_id'] ?>">删除</span></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </table>
-                <div class="cart-address" style="margin-top:20px;padding:20px;background:#f9f9f9;border-radius:8px;">
-                    <h4 style="margin-bottom:15px;">选择收货地址</h4>
-                    <div id="address-list-cart">
-                        <div style="color:#999;padding:10px;">正在加载收货地址...</div>
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-clipboard-check me-2"></i>购物须知</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 text-sm text-dark"><i class="bi bi-truck me-1"></i>满99元全国包邮</li>
+                        <li class="mb-2 text-sm text-dark"><i class="bi bi-credit-card me-1"></i>支持货到付款服务</li>
+                        <li class="mb-2 text-sm text-dark"><i class="bi bi-arrow-counterclockwise me-1"></i>7天无理由退换货</li>
+                        <li class="text-sm text-dark"><i class="bi bi-shield-check me-1"></i>正品保证 假一赔十</li>
+                    </ul>
+                </div>
+                <div class="glass-card rounded-xl p-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-bell me-2"></i>售后服务</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-headset me-1"></i>在线客服咨询</a></li>
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-search me-1"></i>物流进度查询</a></li>
+                        <li><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-chat-left-text me-1"></i>售后问题反馈</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 中间主要内容 -->
+            <div class="col-lg-7">
+                <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                    <div class="card-header bg-white border-0">
+                        <h3 class="font-bold text-dark"><i class="bi bi-cart3 me-2"></i>我的购物车</h3>
                     </div>
-                    <button class="form-btn" style="width:auto;padding:5px 15px;font-size:12px;margin-top:10px;" onclick="showAddAddressModal()">+ 添加新地址</button>
+                    <div class="card-body">
+                        <?php if (empty($cartList)): ?>
+                            <div class="text-center py-12">
+                                <div class="text-6xl mb-4 text-gray-300"><i class="bi bi-cart-x"></i></div>
+                                <p class="text-gray-400 mb-4">购物车空空如也</p>
+                                <a href="<?php echo APP_BASE ?>/index/goods_list" class="btn btn-gradient-primary"><i class="bi bi-bag me-1"></i>去选购</a>
+                            </div>
+                        <?php else: ?>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr class="bg-gray-50">
+                                            <th scope="col">商品图片</th>
+                                            <th scope="col">商品名称</th>
+                                            <th scope="col">单价</th>
+                                            <th scope="col">数量</th>
+                                            <th scope="col">小计</th>
+                                            <th scope="col">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($cartList as $item): ?>
+                                            <tr data-cart-id="<?= $item['cart_id'] ?>">
+                                                <td>
+                                                    <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-200">
+                                                        <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
+                                                             onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                                             alt="<?= htmlspecialchars($item['goods_name']) ?>"
+                                                             class="w-full h-full object-cover">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="text-dark hover:text-primary-light font-medium">
+                                                        <?= htmlspecialchars($item['goods_name']) ?>
+                                                    </a>
+                                                </td>
+                                                <td class="text-danger font-bold">¥<?= number_format($item['goods_price'], 2) ?></td>
+                                                <td>
+                                                    <div class="d-flex align-items-center border border-gray-200 rounded-lg overflow-hidden w-fit">
+                                                        <button class="w-8 h-8 bg-gray-100 hover:bg-gray-200 transition-colors" data-cart-id="<?= $item['cart_id'] ?>">-</button>
+                                                        <input type="text" value="<?= $item['goods_num'] ?>" class="w-12 h-8 text-center border-0 outline-none">
+                                                        <button class="w-8 h-8 bg-gray-100 hover:bg-gray-200 transition-colors" data-cart-id="<?= $item['cart_id'] ?>">+</button>
+                                                    </div>
+                                                </td>
+                                                <td class="text-danger font-bold sub-total">¥<?= number_format($item['goods_price'] * $item['goods_num'], 2) ?></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-danger" data-cart-id="<?= $item['cart_id'] ?>"><i class="bi bi-trash"></i></button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- 收货地址 -->
+                            <div class="mt-4 bg-gray-50 rounded-xl p-4">
+                                <h4 class="font-bold text-dark mb-3"><i class="bi bi-map-pin me-2"></i>选择收货地址</h4>
+                                <div id="address-list-cart" class="space-y-2">
+                                    <div class="text-center text-gray-400 py-4">正在加载收货地址...</div>
+                                </div>
+                                <button class="btn btn-outline-primary btn-sm mt-3" onclick="showAddAddressModal()"><i class="bi bi-plus me-1"></i>添加新地址</button>
+                            </div>
+
+                            <!-- 结算区域 -->
+                            <div class="mt-4 d-flex justify-content-between align-items-center">
+                                <div class="text-lg">
+                                    <span class="text-gray-500">商品总金额：</span>
+                                    <span class="text-danger font-bold text-xl sum-price">¥<?= number_format($cartTotal, 2) ?></span>
+                                </div>
+                                <button class="btn btn-gradient-primary px-8" id="checkout-btn"><i class="bi bi-credit-card me-1"></i>确认结算</button>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <div class="cart-sum">
-                    <span class="sum-price">商品总金额：¥<?= number_format($cartTotal, 2) ?></span>
-                    <button class="form-btn" style="width:120px;" id="checkout-btn">确认结算下单</button>
+            </div>
+
+            <!-- 右侧推荐 -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-gift me-2"></i>热门优惠券</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>满200减20 通用券</a></li>
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>满200减20 品类券</a></li>
+                        <li class="mb-2"><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-ticket me-1"></i>满200减20 新人券</a></li>
+                        <li><a href="#" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-star me-1"></i>新用户首单专享优惠</a></li>
+                    </ul>
                 </div>
-            <?php endif; ?>
-        </div>
-
-        <!-- 右侧推荐 -->
-        <div class="sidebar-right">
-            <h3 class="sidebar-title"><i class="bi bi-gift me-1"></i> 热门优惠券</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">满200减20 通用券</a></li>
-                <li><a href="#">满200减20 品类券</a></li>
-                <li><a href="#">满200减20 新人券</a></li>
-                <li><a href="#">新用户首单专享优惠</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-fire me-1"></i> 热门推荐</h3>
-            <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">热销榜单</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">新品上市限时抢购</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">数码配件</a></li>
-            </ul>
-
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-chat-dots me-1"></i> 用户评价</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">商品质量很好 物流速度快</a></li>
-                <li><a href="#">价格实惠 值得购买</a></li>
-            </ul>
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-fire me-2"></i>热门推荐</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-arrow-up-circle me-1"></i>热销榜单</a></li>
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-clock me-1"></i>新品上市限时抢购</a></li>
+                        <li><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-cpu me-1"></i>数码配件</a></li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-blue rounded-xl p-4 text-white">
+                    <h4 class="font-bold mb-3"><i class="bi bi-chat-dots me-2"></i>用户评价</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 text-sm"><i class="bi bi-quote me-1"></i>商品质量很好 物流速度快</li>
+                        <li class="text-sm"><i class="bi bi-quote me-1"></i>价格实惠 值得购买</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -293,7 +329,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
         }
 
         // 数量减少按钮
-        document.querySelectorAll('.num-minus').forEach(btn => {
+        document.querySelectorAll('tbody tr td:nth-child(4) button:first-child').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tr = btn.closest('tr');
                 const input = tr.querySelector('.num-input');
@@ -308,7 +344,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
             });
         });
 
-        document.querySelectorAll('.num-plus').forEach(btn => {
+        document.querySelectorAll('tbody tr td:nth-child(4) button:last-child').forEach(btn => {
             btn.addEventListener('click', () => {
                 const tr = btn.closest('tr');
                 const input = tr.querySelector('.num-input');
@@ -343,7 +379,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
         }
 
         // 删除购物车
-        document.querySelectorAll('.cart-del').forEach(del => {
+        document.querySelectorAll('.btn-outline-danger').forEach(del => {
             del.addEventListener('click', () => {
                 const cartId = del.dataset.cartId;
                 const tr = del.closest('tr');
@@ -358,20 +394,20 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                     .then(data => {
                         if (data.code === 200) {
                             tr.remove();
-                            document.querySelector('.sum-price').innerText = '商品总金额：¥' + data.cart_total.toFixed(2);
+                            document.querySelector('.sum-price').innerText = '¥' + data.cart_total.toFixed(2);
                             document.querySelectorAll('.cart-count, .cart-num').forEach(el => {
                                 el.innerText = data.cart_count;
                             });
                             showToast('删除成功');
 
-                            if (document.querySelectorAll('.cart-table tr').length <= 1) {
-                                document.querySelector('.content-middle').innerHTML = `
-                        <div class="cart-empty" style="text-align: center; padding: 60px 0;">
-                            <div style="font-size: 48px; margin-bottom: 15px;">🛒</div>
-                            <p style="color: #999; margin-bottom: 20px;">购物车空空如也</p>
-                            <a href="<?php echo APP_BASE ?>/index/goods_list" class="form-btn" style="display: inline-block; width: auto; padding: 10px 30px;">去选购</a>
-                        </div>
-                    `;
+                            if (document.querySelectorAll('tbody tr').length === 0) {
+                                document.querySelector('.card-body').innerHTML = `
+                                    <div class="text-center py-12">
+                                        <div class="text-6xl mb-4 text-gray-300"><i class="bi bi-cart-x"></i></div>
+                                        <p class="text-gray-400 mb-4">购物车空空如也</p>
+                                        <a href="<?php echo APP_BASE ?>/index/goods_list" class="btn btn-gradient-primary"><i class="bi bi-bag me-1"></i>去选购</a>
+                                    </div>
+                                `;
                             }
                         }
                     });
@@ -500,10 +536,10 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                         let html = '';
                         data.data.forEach(item => {
                             html += `
-                                <div class="address-item" style="padding:10px;border:2px solid ${selectedAddrId === item.addr_id ? '#e1251b' : '#eee'};border-radius:4px;margin-bottom:10px;cursor:pointer;" 
+                                <div class="p-3 border-2 rounded-lg cursor-pointer transition-all ${selectedAddrId === item.addr_id ? 'border-primary-light bg-primary-light/10' : 'border-gray-200 hover:border-gray-300'}" 
                                      onclick="selectAddress(${item.addr_id})">
-                                    <div style="font-weight:bold;">${item.consignee} ${item.phone}</div>
-                                    <div style="color:#666;font-size:12px;">${item.province || ''}${item.city || ''}${item.district || ''}${item.detail_addr}</div>
+                                    <div class="font-bold text-dark">${item.consignee} ${item.phone}</div>
+                                    <div class="text-gray-500 text-sm mt-1">${item.province || ''}${item.city || ''}${item.district || ''}${item.detail_addr}</div>
                                 </div>
                             `;
                         });
@@ -513,7 +549,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                             loadAddressList();
                         }
                     } else {
-                        document.getElementById('address-list-cart').innerHTML = '<div style="color:#999;padding:10px;">暂无收货地址，请添加</div>';
+                        document.getElementById('address-list-cart').innerHTML = '<div class="text-center text-gray-400 py-4">暂无收货地址，请添加</div>';
                     }
                 })
                 .catch(err => console.error('加载地址失败:', err));
@@ -585,7 +621,7 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
 
             const checkoutBtn = document.getElementById('checkout-btn');
             checkoutBtn.disabled = true;
-            checkoutBtn.textContent = '处理中...';
+            checkoutBtn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>处理中...';
 
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/checkout', {
                     method: 'POST',
@@ -604,14 +640,14 @@ $cartCount = isset($cartCount) ? $cartCount : 0;
                     } else {
                         showToast(data.msg || '下单失败');
                         checkoutBtn.disabled = false;
-                        checkoutBtn.textContent = '确认结算下单';
+                        checkoutBtn.innerHTML = '<i class="bi bi-credit-card me-1"></i>确认结算';
                     }
                 })
                 .catch(err => {
                     console.error('下单失败:', err);
                     showToast('下单失败，请稍后重试');
                     checkoutBtn.disabled = false;
-                    checkoutBtn.textContent = '确认结算下单';
+                    checkoutBtn.innerHTML = '<i class="bi bi-credit-card me-1"></i>确认结算';
                 });
         });
     </script>

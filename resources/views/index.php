@@ -148,182 +148,211 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <?php endif; ?>
 
     <!-- ========== Banner区域 ========== -->
-    <div class="banner-section main-content">
-        <div class="banner-row">
-            <div class="category-nav">
-                <div class="nav-header">
-                    <span class="nav-icon"><i class="bi bi-folder2-open"></i></span>
-                    <span>全部分类</span>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="row g-4">
+            <!-- 左侧分类导航 -->
+            <div class="col-lg-2 col-md-12">
+                <div class="glass-card rounded-2xl p-0 overflow-hidden">
+                    <div class="bg-gradient-blue px-4 py-3">
+                        <div class="d-flex align-items-center gap-2 text-white">
+                            <i class="bi bi-folder2-open"></i>
+                            <span class="font-bold">全部分类</span>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <?php foreach ($categoryList as $cat): ?>
+                            <li class="list-group-item border-0 border-bottom border-dashed border-gray-100 hover:bg-blue-50/50 transition-colors">
+                                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $cat['cat_id'] ?>" class="d-flex align-items-center gap-2 text-dark hover:text-primary-light w-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary-light"></span>
+                                    <span class="text-sm"><?= htmlspecialchars($cat['cat_name']) ?></span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
-                <ul class="nav-list">
-                    <?php foreach ($categoryList as $cat): ?>
-                        <li>
-                            <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $cat['cat_id'] ?>">
-                                <span class="nav-item-icon">●</span>
-                                <span class="nav-item-name"><?= htmlspecialchars($cat['cat_name']) ?></span>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
             </div>
 
-            <div class="main-banner-area">
-                <div class="main-banner">
-                    <?php if (!empty($bannerList)): ?>
-                        <?php foreach ($bannerList as $key => $banner): ?>
-                            <div class="slide-item <?= $key == 0 ? 'active' : '' ?>">
-                                <a href="<?= htmlspecialchars($banner['banner_url']) ?>">
-                                    <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($banner['banner_img']) ?>" alt="<?= htmlspecialchars($banner['banner_title']) ?>">
+            <!-- 中间主Banner -->
+            <div class="col-lg-7 col-md-8">
+                <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded-2xl overflow-hidden shadow-lg">
+                        <?php if (!empty($bannerList)): ?>
+                            <?php foreach ($bannerList as $key => $banner): ?>
+                                <div class="carousel-item <?= $key == 0 ? 'active' : '' ?>">
+                                    <a href="<?= htmlspecialchars($banner['banner_url']) ?>">
+                                        <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($banner['banner_img']) ?>" 
+                                             class="d-block w-100" 
+                                             style="height: 400px; object-fit: cover;"
+                                             alt="<?= htmlspecialchars($banner['banner_title']) ?>">
+                                    </a>
+                                    <div class="carousel-caption d-none d-md-block text-left" style="bottom: 30px; left: 30px; right: auto;">
+                                        <h2 class="text-white text-3xl font-extrabold mb-2 text-shadow-lg"><?= htmlspecialchars($banner['banner_title']) ?></h2>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="carousel-item active">
+                                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=1">
+                                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner1.jpg" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="banner1">
                                 </a>
-                                <div class="slide-text">
-                                    <h2><?= htmlspecialchars($banner['banner_title']) ?></h2>
+                                <div class="carousel-caption d-none d-md-block text-left" style="bottom: 30px; left: 30px; right: auto;">
+                                    <h2 class="text-white text-3xl font-extrabold mb-2 text-shadow-lg">数码好物 限时特惠</h2>
+                                    <p class="text-white/90">全场低价，正品保障，全国包邮</p>
                                 </div>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="slide-item active">
-                            <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=1">
-                                <img src="<?php echo APP_BASE ?>/resources/images/banner/banner1.jpg" alt="banner1">
-                            </a>
-                            <div class="slide-text">
-                                <h2>数码好物 限时特惠</h2>
-                                <p>全场低价，正品保障，全国包邮</p>
+                            <div class="carousel-item">
+                                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=2">
+                                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner2.jpg" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="banner2">
+                                </a>
+                                <div class="carousel-caption d-none d-md-block text-left" style="bottom: 30px; left: 30px; right: auto;">
+                                    <h2 class="text-white text-3xl font-extrabold mb-2 text-shadow-lg">美妆护肤 新品上市</h2>
+                                    <p class="text-white/90">大牌美妆，品质保障，放心购买</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="slide-item">
-                            <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=2">
-                                <img src="<?php echo APP_BASE ?>/resources/images/banner/banner2.jpg" alt="banner2">
-                            </a>
-                            <div class="slide-text">
-                                <h2>美妆护肤 新品上市</h2>
-                                <p>大牌美妆，品质保障，放心购买</p>
+                            <div class="carousel-item">
+                                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=3">
+                                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner3.jpg" class="d-block w-100" style="height: 400px; object-fit: cover;" alt="banner3">
+                                </a>
+                                <div class="carousel-caption d-none d-md-block text-left" style="bottom: 30px; left: 30px; right: auto;">
+                                    <h2 class="text-white text-3xl font-extrabold mb-2 text-shadow-lg">生活百货 应有尽有</h2>
+                                    <p class="text-white/90">品质生活，从这里开始，全场满减</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="slide-item">
-                            <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=3">
-                                <img src="<?php echo APP_BASE ?>/resources/images/banner/banner3.jpg" alt="banner3">
-                            </a>
-                            <div class="slide-text">
-                                <h2>生活百货 应有尽有</h2>
-                                <p>品质生活，从这里开始，全场满减</p>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    <button class="banner-arrow banner-prev" id="banner-prev">‹</button>
-                    <button class="banner-arrow banner-next" id="banner-next">›</button>
-                </div>
-                <div class="banner-dots">
-                    <?php if (!empty($bannerList)): ?>
-                        <?php foreach ($bannerList as $key => $banner): ?>
-                            <span class="banner-dot <?= $key == 0 ? 'active' : '' ?>" data-index="<?= $key ?>"></span>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <span class="banner-dot active" data-index="0"></span>
-                        <span class="banner-dot" data-index="1"></span>
-                        <span class="banner-dot" data-index="2"></span>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-black/30 rounded-full p-2" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-black/30 rounded-full p-2" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    <div class="carousel-indicators" style="bottom: 15px;">
+                        <?php if (!empty($bannerList)): ?>
+                            <?php foreach ($bannerList as $key => $banner): ?>
+                                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="<?= $key ?>" <?= $key == 0 ? 'class="active"' : '' ?> class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors"></button>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active w-3 h-3 rounded-full bg-white/50 hover:bg-white"></button>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" class="w-3 h-3 rounded-full bg-white/50 hover:bg-white"></button>
+                            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" class="w-3 h-3 rounded-full bg-white/50 hover:bg-white"></button>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
-            <div class="side-banners-area">
-                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=1" class="side-banner-item">
-                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-phone.jpg" alt="banner-phone">
-                </a>
-                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=6" class="side-banner-item">
-                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-tools.jpg" alt="banner-tools">
-                </a>
-                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=3" class="side-banner-item">
-                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-lifetools.jpg" alt="banner-lifetools">
-                </a>
-                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=2" class="side-banner-item">
-                    <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-meizhuang.jpg" alt="banner-meizhuang">
-                </a>
+            <!-- 右侧小Banner -->
+            <div class="col-lg-3 col-md-4">
+                <div class="d-flex flex-column gap-3 h-full">
+                    <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=1" class="glass-card rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                        <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-phone.jpg" class="w-full" style="height: 95px; object-fit: cover;" alt="banner-phone">
+                    </a>
+                    <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=6" class="glass-card rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                        <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-tools.jpg" class="w-full" style="height: 95px; object-fit: cover;" alt="banner-tools">
+                    </a>
+                    <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=3" class="glass-card rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                        <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-lifetools.jpg" class="w-full" style="height: 95px; object-fit: cover;" alt="banner-lifetools">
+                    </a>
+                    <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=2" class="glass-card rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+                        <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-meizhuang.jpg" class="w-full" style="height: 95px; object-fit: cover;" alt="banner-meizhuang">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- ========== 热销排行榜 ========== -->
     <?php if (!empty($hotRanking)): ?>
-    <div class="hot-rank-section main-content">
-        <div class="goods-header">
-            <div class="goods-title">
-                    <span class="title-icon"><i class="bi bi-trophy-fill"></i></span>
-                    <span>热销排行榜</span>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="bg-gradient-blue rounded-2xl p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-2 text-white">
+                    <i class="bi bi-trophy-fill text-xl"></i>
+                    <h3 class="font-bold text-lg">热销排行榜</h3>
                 </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
-        </div>
-        <div class="hot-rank-list">
-            <?php foreach ($hotRanking as $index => $item): $rank = $index + 1; ?>
-                <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="hot-rank-item">
-                    <span class="hot-rank-num rank-<?= $rank ?>"><?= $rank ?></span>
-                    <div class="hot-rank-image">
+                <a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="text-white/80 hover:text-white text-sm">查看更多 <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3">
+                <?php foreach ($hotRanking as $index => $item): $rank = $index + 1; ?>
+                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="col glass-card rounded-xl p-3 flex flex-col items-center text-center hover:shadow-lg transition-all hover:-translate-y-1">
+                        <span class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mb-2" 
+                              style="background: <?= $rank == 1 ? 'linear-gradient(135deg, #f59e0b, #dc2626)' : ($rank == 2 ? 'linear-gradient(135deg, #64748b, #475569)' : ($rank == 3 ? 'linear-gradient(135deg, #b45309, #92400e)' : 'var(--primary-light)')) ?>">
+                            <?= $rank ?>
+                        </span>
                         <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
-                            onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                            alt="<?= htmlspecialchars($item['goods_name']) ?>">
-                    </div>
-                    <div class="hot-rank-info">
-                        <div class="hot-rank-name"><?= htmlspecialchars($item['goods_name']) ?></div>
-                        <div class="hot-rank-price">¥<?= number_format($item['goods_price'], 2) ?></div>
-                        <div class="hot-rank-sales">已售<?= $item['sales'] ?? 0 ?>件</div>
-                    </div>
-                </a>
-            <?php endforeach; ?>
+                             onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                             alt="<?= htmlspecialchars($item['goods_name']) ?>"
+                             class="w-16 h-16 rounded-xl object-cover bg-gray-100 mb-2">
+                        <div class="flex-1 min-w-0">
+                            <div class="text-dark font-medium text-sm line-clamp-1"><?= htmlspecialchars($item['goods_name']) ?></div>
+                            <div class="text-danger font-bold mt-1">¥<?= number_format($item['goods_price'], 2) ?></div>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- ========== 热门商品 ========== -->
-    <div class="goods-section main-content">
-        <div class="goods-header">
-            <div class="goods-title">
-                    <span class="title-icon"><i class="bi bi-fire"></i></span>
-                    <span>热门商品</span>
-                </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-gray-200">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-fire text-lg text-orange-500"></i>
+                <h3 class="font-bold text-xl text-dark">热门商品</h3>
+            </div>
+            <a href="<?php echo APP_BASE ?>/index/goods_list" class="text-gray-500 hover:text-primary-light text-sm">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
-        <div class="goods-grid">
+        <div class="row g-4">
             <?php if (!empty($randomGoods)): ?>
                 <?php foreach ($randomGoods as $goods): ?>
-                    <div class="goods-card">
-                        <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $goods['goods_id'] ?>">
-                            <div class="goods-image">
-                                <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($goods['goods_img'] ?? 'default.jpg') ?>"
-                                    onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                    alt="<?= htmlspecialchars($goods['goods_name']) ?>">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                        <div class="product-card card-lift rounded-2xl overflow-hidden">
+                            <div class="relative">
+                                <div class="aspect-square bg-gray-100 overflow-hidden">
+                                    <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($goods['goods_img'] ?? 'default.jpg') ?>"
+                                         onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                         alt="<?= htmlspecialchars($goods['goods_name']) ?>"
+                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                                </div>
                                 <?php if ($goods['is_hot']): ?>
-                                    <span class="hot-tag">HOT</span>
+                                    <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
                                 <?php endif; ?>
                             </div>
-                            <div class="goods-info">
-                                <div class="goods-title-text"><?= htmlspecialchars($goods['goods_name']) ?></div>
-                                <div class="goods-price-info">
-                                    <span class="price">¥<?= number_format($goods['goods_price'], 2) ?></span>
+                            <div class="p-3">
+                                <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors"><?= htmlspecialchars($goods['goods_name']) ?></h4>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-danger font-bold text-lg">¥<?= number_format($goods['goods_price'], 2) ?></span>
                                     <?php if (!empty($goods['sales'])): ?>
-                                        <span class="goods-sales-text">已售<?= $goods['sales'] ?></span>
+                                        <span class="text-gray-400 text-xs">已售<?= $goods['sales'] ?></span>
                                     <?php endif; ?>
                                 </div>
+                                <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-eye me-1"></i>查看详情</button>
                             </div>
-                        </a>
-                        <button class="view-detail-btn btn-bs-outline" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-eye me-1"></i>查看详情</button>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="goods-card">
-                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=1">
-                        <div class="goods-image">
-                            <img src="<?php echo APP_BASE ?>/resources/images/goods/goods1.jpg"
-                                onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                alt="示例商品">
-                            <span class="hot-tag">HOT</span>
-                        </div>
-                        <div class="goods-info">
-                            <div class="goods-title-text">示例商品1</div>
-                            <div class="goods-price-info">
-                                <span class="price">¥99.00</span>
+                <div class="col-lg-2 col-md-3 col-sm-4">
+                    <div class="product-card card-lift rounded-2xl overflow-hidden">
+                        <div class="relative">
+                            <div class="aspect-square bg-gray-100 overflow-hidden">
+                                <img src="<?php echo APP_BASE ?>/resources/images/goods/goods1.jpg"
+                                     onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                     alt="示例商品"
+                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
                             </div>
+                            <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
                         </div>
-                    </a>
-                    <button class="view-detail-btn" data-goods-id="1">查看详情</button>
+                        <div class="p-3">
+                            <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2">示例商品1</h4>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="text-danger font-bold text-lg">¥99.00</span>
+                            </div>
+                            <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="1"><i class="bi bi-eye me-1"></i>查看详情</button>
+                        </div>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -331,47 +360,50 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
 
     <!-- ========== 最近浏览 ========== -->
     <?php if (!empty($recentlyViewed)): ?>
-    <div class="recent-viewed-section main-content">
-        <div class="goods-header">
-            <div class="goods-title">
-                    <span class="title-icon"><i class="bi bi-clock-history"></i></span>
-                    <span>最近浏览</span>
-                </div>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-gray-200">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-clock-history text-lg text-blue-500"></i>
+                <h3 class="font-bold text-xl text-dark">最近浏览</h3>
+            </div>
         </div>
-        <div class="recent-viewed-grid">
+        <div class="row g-4">
             <?php foreach ($recentlyViewed as $item): ?>
-                <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="goods-card" style="text-decoration:none;">
-                    <div class="goods-image">
-                        <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
-                            onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                            alt="<?= htmlspecialchars($item['goods_name']) ?>">
-                        <?php if ($item['is_hot']): ?>
-                            <span class="hot-tag">HOT</span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="goods-info">
-                        <div class="goods-title-text"><?= htmlspecialchars($item['goods_name']) ?></div>
-                        <div class="goods-price-info">
-                            <span class="price">¥<?= number_format($item['goods_price'], 2) ?></span>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="product-card card-lift rounded-2xl overflow-hidden block">
+                        <div class="relative">
+                            <div class="aspect-square bg-gray-100 overflow-hidden">
+                                <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
+                                     onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                     alt="<?= htmlspecialchars($item['goods_name']) ?>"
+                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                            </div>
+                            <?php if ($item['is_hot']): ?>
+                                <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
+                            <?php endif; ?>
                         </div>
-                    </div>
-                </a>
+                        <div class="p-3">
+                            <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors"><?= htmlspecialchars($item['goods_name']) ?></h4>
+                            <span class="text-danger font-bold text-lg">¥<?= number_format($item['goods_price'], 2) ?></span>
+                        </div>
+                    </a>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
     <?php endif; ?>
 
     <!-- ========== 猜你喜欢 ========== -->
-    <div class="goods-section main-content">
-        <div class="goods-header">
-            <div class="goods-title">
-                    <span class="title-icon"><i class="bi bi-lightbulb"></i></span>
-                    <span>猜你喜欢</span>
-                </div>
-            <a href="<?php echo APP_BASE ?>/index/goods_list" class="more-link">查看更多 <i class="bi bi-arrow-right"></i></a>
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-gray-200">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-lightbulb text-lg text-yellow-500"></i>
+                <h3 class="font-bold text-xl text-dark">猜你喜欢</h3>
+            </div>
+            <a href="<?php echo APP_BASE ?>/index/goods_list" class="text-gray-500 hover:text-primary-light text-sm">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
-        <div class="goods-grid" id="recommend-goods">
-            <div style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">正在为您推荐商品...</div>
+        <div class="row g-4" id="recommend-goods">
+            <div class="col-12 text-center text-gray-400 py-10">正在为您推荐商品...</div>
         </div>
     </div>
 
@@ -648,39 +680,114 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         let html = '';
                         data.data.forEach(item => {
                             html += `
-                                <div class="goods-card">
-                                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=${item.goods_id}">
-                                        <div class="goods-image">
-                                            <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}"
-                                                 onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                                 alt="${item.goods_name}">
-                                            <span class="hot-tag">HOT</span>
-                                        </div>
-                                        <div class="goods-info">
-                                            <div class="goods-title-text">${item.goods_name}</div>
-                                            <div class="goods-price-info">
-                                                <span class="price">¥${parseFloat(item.goods_price).toFixed(2)}</span>
+                                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                                    <div class="product-card card-lift rounded-2xl overflow-hidden">
+                                        <div class="relative">
+                                            <div class="aspect-square bg-gray-100 overflow-hidden">
+                                                <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}"
+                                                     onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                                     alt="${item.goods_name}"
+                                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
                                             </div>
+                                            <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
                                         </div>
-                                    </a>
-                                    <button class="view-detail-btn" data-goods-id="${item.goods_id}">查看详情</button>
+                                        <div class="p-3">
+                                            <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors">${item.goods_name}</h4>
+                                            <span class="text-danger font-bold text-lg">¥${parseFloat(item.goods_price).toFixed(2)}</span>
+                                            <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="${item.goods_id}"><i class="bi bi-eye me-1"></i>查看详情</button>
+                                        </div>
+                                    </div>
                                 </div>
                             `;
                         });
                         document.getElementById('recommend-goods').innerHTML = html;
-                        document.querySelectorAll('.view-detail-btn').forEach(btn => {
+                        document.querySelectorAll('.btn[data-goods-id]').forEach(btn => {
                             btn.addEventListener('click', () => {
                                 window.location.href = '<?php echo APP_BASE ?>/index/goods_detail?id=' + btn.dataset.goodsId;
                             });
                         });
                     } else {
-                        document.getElementById('recommend-goods').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">暂无推荐商品</div>';
+                        document.getElementById('recommend-goods').innerHTML = '<div class="col-12 text-center text-gray-400 py-10">暂无推荐商品</div>';
                     }
                 })
                 .catch(err => {
                     console.error('加载推荐商品失败', err);
-                    document.getElementById('recommend-goods').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px;grid-column:1/-1;">加载推荐失败</div>';
+                    document.getElementById('recommend-goods').innerHTML = '<div class="col-12 text-center text-gray-400 py-10">加载推荐失败</div>';
                 });
+        }
+
+        /* ========== 图片懒加载 ========== */
+        (function() {
+            const lazyImages = document.querySelectorAll('img[data-src]');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.onload = () => {
+                            img.classList.remove('lazy');
+                        };
+                        observer.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.01
+            });
+
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+            });
+        })();
+
+        /* ========== 平滑滚动到锚点 ========== */
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        /* ========== 导航栏滚动效果 ========== */
+        (function() {
+            const navbar = document.querySelector('.bs-navbar');
+            window.addEventListener('scroll', () => {
+                if (document.documentElement.scrollTop > 50) {
+                    navbar.classList.add('navbar-scrolled');
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                }
+            });
+        })();
+
+        /* ========== 商品卡片悬浮效果 ========== */
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        /* ========== 搜索框聚焦效果 ========== */
+        const searchInput = document.querySelector('.search-input');
+        const searchBox = document.querySelector('.search-box');
+        if (searchInput && searchBox) {
+            searchInput.addEventListener('focus', () => {
+                searchBox.classList.add('focused');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchBox.classList.remove('focused');
+            });
         }
     </script>
 </body>

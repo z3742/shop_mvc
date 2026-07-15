@@ -91,143 +91,214 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         </div>
     </div>
 
-    <div class="main-layout main-content">
-        <div class="sidebar-left">
-            <h3 class="sidebar-title"><i class="bi bi-bag-heart me-1"></i> 相关分类</h3>
-            <ul class="sidebar-list">
-                <?php foreach ($categoryList as $cat): ?>
-                    <li><a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $cat['cat_id'] ?>"><?= htmlspecialchars($cat['cat_name']) ?></a></li>
-                <?php endforeach; ?>
-            </ul>
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-shield-check me-1"></i> 购物须知</h3>
-            <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/help">正品保证 全国联保</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/help">支持7天无理由退换</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/help">极速发货 售后保障</a></li>
-            </ul>
-        </div>
-
-        <div class="content-middle">
-            <div class="detail-main">
-                <div class="detail-pic">
-                    <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($goods['goods_img'] ?? 'default.jpg') ?>"
-                        onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                        alt="<?= htmlspecialchars($goods['goods_name']) ?>">
+    <div class="main-content" style="margin-top: 20px;">
+        <div class="row">
+            <!-- 左侧分类导航 -->
+            <div class="col-lg-2 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-bag-heart me-2"></i>相关分类</h4>
+                    <ul class="list-unstyled">
+                        <?php foreach ($categoryList as $cat): ?>
+                            <li class="mb-2">
+                                <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $cat['cat_id'] ?>" class="text-dark hover:text-primary-light text-sm transition-colors">
+                                    <i class="bi bi-chevron-right me-1"></i><?= htmlspecialchars($cat['cat_name']) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
-                <div class="detail-info">
-                    <h2 class="detail-name"><?= htmlspecialchars($goods['goods_name']) ?></h2>
-                    <div class="detail-price">¥ <?= number_format($goods['goods_price'], 2) ?></div>
-                    <div class="detail-params">
-                        <p>库存：<?= $goods['stock'] ?> 件</p>
-                        <p>销量：<?= $goods['sales'] ?? 0 ?> 件</p>
-                        <p>分类：<?= htmlspecialchars($category['cat_name'] ?? '未知') ?></p>
-                        <p>规格：全国包邮 · 次日达</p>
-                    </div>
-                    <div class="detail-operate">
-                        <div class="detail-num">
-                            <button class="num-minus">-</button>
-                            <input type="text" value="1" class="num-input" id="buy-num">
-                            <button class="num-plus">+</button>
-                        </div>
-                        <button class="detail-btn add-cart" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-cart-plus me-1"></i>加入购物车</button>
-                        <button class="detail-btn buy" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-lightning-charge me-1"></i>立即购买</button>
-                        <button class="detail-btn favorite" data-goods-id="<?= $goods['goods_id'] ?>" id="favorite-btn"><i class="bi bi-heart me-1"></i>收藏</button>
-                        <?php if ($isAdmin): ?>
-                        <button class="detail-btn delete-goods" style="background:var(--danger);" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-trash me-1"></i>删除商品</button>
-                        <?php endif; ?>
-                    </div>
+                <div class="glass-card rounded-xl p-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-shield-check me-2"></i>购物须知</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 text-sm text-dark"><i class="bi bi-check-circle text-success me-1"></i>正品保证 全国联保</li>
+                        <li class="mb-2 text-sm text-dark"><i class="bi bi-check-circle text-success me-1"></i>支持7天无理由退换</li>
+                        <li class="text-sm text-dark"><i class="bi bi-check-circle text-success me-1"></i>极速发货 售后保障</li>
+                    </ul>
                 </div>
             </div>
 
-            <div style="margin-top:20px;line-height:2;">
-                <h3 class="goods-title">商品介绍</h3>
-                <p><?= htmlspecialchars($goods['goods_desc'] ?? '暂无详细介绍') ?></p>
-            </div>
-
-            <!-- 相关推荐 -->
-            <?php if (!empty($relatedGoods)): ?>
-            <div style="margin-top:30px;">
-                <h3 class="goods-title">相关推荐</h3>
-                <div class="related-goods-grid">
-                    <?php foreach ($relatedGoods as $related): ?>
-                        <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $related['goods_id'] ?>" class="related-goods-card">
-                            <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($related['goods_img'] ?? 'default.jpg') ?>"
-                                onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                alt="<?= htmlspecialchars($related['goods_name']) ?>">
-                            <div class="related-info">
-                                <div class="related-name"><?= htmlspecialchars($related['goods_name']) ?></div>
-                                <div class="related-price">¥<?= number_format($related['goods_price'], 2) ?></div>
+            <!-- 中间内容区 -->
+            <div class="col-lg-7">
+                <!-- 商品详情卡片 -->
+                <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                    <div class="row">
+                        <!-- 商品图片 -->
+                        <div class="col-md-5">
+                            <div class="p-4 bg-gray-50">
+                                <div class="aspect-square rounded-xl overflow-hidden border border-gray-200">
+                                    <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($goods['goods_img'] ?? 'default.jpg') ?>"
+                                         onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                         alt="<?= htmlspecialchars($goods['goods_name']) ?>"
+                                         class="w-full h-full object-contain">
+                                </div>
                             </div>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            <?php endif; ?>
+                        </div>
 
-            <!-- 商品评价 -->
-            <div class="comment-section" style="margin-top:30px;">
-                <h3 class="goods-title">商品评价</h3>
-                <div class="rating-summary" id="rating-summary" style="display:flex;align-items:center;margin-bottom:20px;">
-                    <div class="rating-stars" id="rating-stars"></div>
-                    <span class="rating-num" id="rating-num">0.0</span>
-                    <span class="rating-count" id="rating-count">(0条评价)</span>
-                </div>
+                        <!-- 商品信息 -->
+                        <div class="col-md-7 p-5">
+                            <h1 class="text-xl font-bold text-dark mb-3"><?= htmlspecialchars($goods['goods_name']) ?></h1>
+                            <div class="text-danger text-3xl font-extrabold mb-4">¥ <?= number_format($goods['goods_price'], 2) ?></div>
+                            
+                            <!-- 商品参数 -->
+                            <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                                <div class="row row-cols-2 g-3">
+                                    <div class="col"><span class="text-gray-500">库存：</span><span class="font-medium"><?= $goods['stock'] ?> 件</span></div>
+                                    <div class="col"><span class="text-gray-500">销量：</span><span class="font-medium"><?= $goods['sales'] ?? 0 ?> 件</span></div>
+                                    <div class="col"><span class="text-gray-500">分类：</span><span class="font-medium"><?= htmlspecialchars($category['cat_name'] ?? '未知') ?></span></div>
+                                    <div class="col"><span class="text-gray-500">服务：</span><span class="font-medium">全国包邮 · 次日达</span></div>
+                                </div>
+                            </div>
 
-                <div id="comment-list" style="margin-bottom:20px;">
-                    <div style="text-align:center;color:var(--text-muted);padding:30px;border:1px dashed var(--border-color);border-radius:8px;">暂无评价，快来发表第一条评价吧</div>
-                </div>
-
-                <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="comment-form" style="background:var(--bg-input);padding:20px;border-radius:8px;">
-                    <h4 style="margin-bottom:15px;color:var(--text-primary);">发表评价</h4>
-                    <div class="rating-input" id="rating-input" style="margin-bottom:10px;">
-                        <span style="color:var(--text-secondary);margin-right:10px;">评分：</span>
-                        <span class="star" data-rating="1">★</span>
-                        <span class="star" data-rating="2">★</span>
-                        <span class="star" data-rating="3">★</span>
-                        <span class="star" data-rating="4">★</span>
-                        <span class="star" data-rating="5">★</span>
+                            <!-- 操作按钮 -->
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="d-flex align-items-center border border-gray-200 rounded-lg overflow-hidden">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 transition-colors" onclick="decreaseNum()">-</button>
+                                    <input type="text" value="1" id="buy-num" class="w-14 h-10 text-center border-0 outline-none">
+                                    <button class="w-10 h-10 bg-gray-100 hover:bg-gray-200 transition-colors" onclick="increaseNum()">+</button>
+                                </div>
+                                <button class="btn btn-gradient-primary" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-cart-plus me-1"></i>加入购物车</button>
+                                <button class="btn btn-gradient-success" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-lightning-charge me-1"></i>立即购买</button>
+                                <button class="btn btn-outline-primary" data-goods-id="<?= $goods['goods_id'] ?>" id="favorite-btn"><i class="bi bi-heart me-1"></i>收藏</button>
+                                <?php if ($isAdmin): ?>
+                                    <button class="btn btn-gradient-danger" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-trash me-1"></i>删除</button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
-                    <textarea id="comment-content" rows="4" style="width:100%;padding:10px;border:1px solid var(--border-color);border-radius:4px;margin-bottom:10px;resize:none;background:var(--bg-card);color:var(--text-primary);" placeholder="请输入您的评价..."></textarea>
-                    <button class="form-btn" id="submit-comment-btn" style="width:auto;padding:10px 30px;">提交评价</button>
+                </div>
+
+                <!-- 标签页 -->
+                <div class="card rounded-2xl shadow-lg overflow-hidden mb-4">
+                    <div class="card-header bg-white border-0">
+                        <ul class="nav nav-tabs bs-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab-desc">商品介绍</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-comment">商品评价</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-relate">相关推荐</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- 商品介绍 -->
+                            <div class="tab-pane fade show active" id="tab-desc">
+                                <p class="text-gray-600 leading-relaxed"><?= htmlspecialchars($goods['goods_desc'] ?? '暂无详细介绍') ?></p>
+                            </div>
+
+                            <!-- 商品评价 -->
+                            <div class="tab-pane fade" id="tab-comment">
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="star-rating" id="rating-stars"></div>
+                                        <span class="text-xl font-bold text-dark" id="rating-num">0.0</span>
+                                        <span class="text-gray-500" id="rating-count">(0条评价)</span>
+                                    </div>
+                                </div>
+                                <div id="comment-list" class="mb-4">
+                                    <div class="text-center text-gray-400 py-10 border border-dashed border-gray-200 rounded-xl">暂无评价，快来发表第一条评价吧</div>
+                                </div>
+                                <?php if (isset($_SESSION['user_id'])): ?>
+                                <div class="bg-gray-50 rounded-xl p-4">
+                                    <h4 class="font-bold text-dark mb-3">发表评价</h4>
+                                    <div class="mb-3">
+                                        <span class="text-gray-500 me-2">评分：</span>
+                                        <div class="star-rating" id="rating-input">
+                                            <span class="star" data-rating="1">★</span>
+                                            <span class="star" data-rating="2">★</span>
+                                            <span class="star" data-rating="3">★</span>
+                                            <span class="star" data-rating="4">★</span>
+                                            <span class="star" data-rating="5">★</span>
+                                        </div>
+                                    </div>
+                                    <textarea id="comment-content" rows="4" class="form-control bs-input mb-3" placeholder="请输入您的评价..."></textarea>
+                                    <button class="btn btn-gradient-primary" id="submit-comment-btn">提交评价</button>
+                                </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- 相关推荐 -->
+                            <div class="tab-pane fade" id="tab-relate">
+                                <?php if (!empty($relatedGoods)): ?>
+                                    <div class="row g-4">
+                                        <?php foreach ($relatedGoods as $related): ?>
+                                            <div class="col-lg-4 col-md-6">
+                                                <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $related['goods_id'] ?>" class="product-card card-lift rounded-xl overflow-hidden block">
+                                                    <div class="aspect-square bg-gray-100 overflow-hidden">
+                                                        <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($related['goods_img'] ?? 'default.jpg') ?>"
+                                                             onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                                             alt="<?= htmlspecialchars($related['goods_name']) ?>"
+                                                             class="w-full h-full object-cover hover:scale-105 transition-transform">
+                                                    </div>
+                                                    <div class="p-3">
+                                                        <h5 class="font-medium text-dark text-sm truncate"><?= htmlspecialchars($related['goods_name']) ?></h5>
+                                                        <span class="text-danger font-bold">¥<?= number_format($related['goods_price'], 2) ?></span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-center text-gray-400 py-10">暂无相关推荐</div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 最近浏览 -->
+                <?php if (!empty($recentlyViewed)): ?>
+                <div class="card rounded-2xl shadow-lg overflow-hidden">
+                    <div class="card-header bg-white border-0">
+                        <h4 class="font-bold text-dark"><i class="bi bi-clock-history me-2"></i>最近浏览</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <?php foreach ($recentlyViewed as $item): ?>
+                                <div class="col-lg-3 col-md-4 col-sm-6">
+                                    <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="product-card card-lift rounded-xl overflow-hidden block">
+                                        <div class="aspect-square bg-gray-100 overflow-hidden">
+                                            <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
+                                                 onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                                 alt="<?= htmlspecialchars($item['goods_name']) ?>"
+                                                 class="w-full h-full object-cover hover:scale-105 transition-transform">
+                                        </div>
+                                        <div class="p-3">
+                                            <h5 class="font-medium text-dark text-sm truncate"><?= htmlspecialchars($item['goods_name']) ?></h5>
+                                            <span class="text-danger font-bold">¥<?= number_format($item['goods_price'], 2) ?></span>
+                                        </div>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
                 </div>
                 <?php endif; ?>
             </div>
 
-            <!-- 最近浏览 -->
-            <?php if (!empty($recentlyViewed)): ?>
-            <div style="margin-top:30px;">
-                <h3 class="goods-title">最近浏览</h3>
-                <div class="related-goods-grid">
-                    <?php foreach ($recentlyViewed as $item): ?>
-                        <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="related-goods-card">
-                            <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($item['goods_img'] ?? 'default.jpg') ?>"
-                                onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                alt="<?= htmlspecialchars($item['goods_name']) ?>">
-                            <div class="related-info">
-                                <div class="related-name"><?= htmlspecialchars($item['goods_name']) ?></div>
-                                <div class="related-price">¥<?= number_format($item['goods_price'], 2) ?></div>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
+            <!-- 右侧边栏 -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="glass-card rounded-xl p-4 mb-4">
+                    <h4 class="font-bold text-dark mb-3"><i class="bi bi-lightbulb me-2"></i>猜你喜欢</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-star me-1"></i>人气单品</a></li>
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-trophy me-1"></i>热销排行</a></li>
+                        <li class="mb-2"><a href="<?php echo APP_BASE ?>/index/goods_list?sort=price_asc" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-tag me-1"></i>低价好物</a></li>
+                        <li><a href="<?php echo APP_BASE ?>/index/goods_list" class="text-dark hover:text-primary-light text-sm"><i class="bi bi-clock me-1"></i>新品上架</a></li>
+                    </ul>
+                </div>
+                <div class="bg-gradient-blue rounded-xl p-4 text-white">
+                    <h4 class="font-bold mb-3"><i class="bi bi-gift me-2"></i>专属优惠</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-percent me-1"></i>数码品类满200减20</li>
+                        <li><i class="bi bi-ticket me-1"></i>单品直降优惠券</li>
+                    </ul>
+                    <button class="btn glass-btn w-full mt-3">立即领取</button>
                 </div>
             </div>
-            <?php endif; ?>
-        </div>
-
-        <div class="sidebar-right">
-            <h3 class="sidebar-title"><i class="bi bi-lightbulb me-1"></i> 猜你喜欢</h3>
-            <ul class="sidebar-list">
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">人气单品</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales">热销排行</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list?sort=price_asc">低价好物</a></li>
-                <li><a href="<?php echo APP_BASE ?>/index/goods_list">新品上架</a></li>
-            </ul>
-            <h3 class="sidebar-title" style="margin-top:20px;"><i class="bi bi-gift me-1"></i> 专属优惠</h3>
-            <ul class="sidebar-list">
-                <li><a href="#">数码品类满200减20</a></li>
-                <li><a href="#">单品直降优惠券</a></li>
-            </ul>
         </div>
     </div>
 
@@ -323,27 +394,25 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 });
         }
 
-        const minus = document.querySelector('.num-minus');
-        const plus = document.querySelector('.num-plus');
-        const input = document.getElementById('buy-num');
-        if (minus && plus && input) {
-            minus.addEventListener('click', () => {
-                let val = parseInt(input.value);
-                if (val > 1) input.value = val - 1;
-            });
-            plus.addEventListener('click', () => {
-                input.value = parseInt(input.value) + 1;
-            });
+        function decreaseNum() {
+            const input = document.getElementById('buy-num');
+            let val = parseInt(input.value);
+            if (val > 1) input.value = val - 1;
         }
 
-        const addCartBtn = document.querySelector('.add-cart');
+        function increaseNum() {
+            const input = document.getElementById('buy-num');
+            input.value = parseInt(input.value) + 1;
+        }
+
+        const addCartBtn = document.querySelector('.btn.btn-gradient-primary[data-goods-id]');
         if (addCartBtn) {
             addCartBtn.addEventListener('click', () => {
                 const goodsId = addCartBtn.dataset.goodsId;
-                const num = parseInt(input.value);
+                const num = parseInt(document.getElementById('buy-num').value);
                 addCartBtn.disabled = true;
-                const originalText = addCartBtn.innerText;
-                addCartBtn.innerText = '添加中...';
+                const originalText = addCartBtn.innerHTML;
+                addCartBtn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>添加中...';
                 fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/add', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -366,15 +435,15 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         }
                     })
                     .catch(err => { console.error('添加购物车错误', err); showToast('网络连接错误，请稍后重试'); })
-                    .finally(() => { addCartBtn.disabled = false; addCartBtn.innerText = originalText; });
+                    .finally(() => { addCartBtn.disabled = false; addCartBtn.innerHTML = originalText; });
             });
         }
 
-        const buyBtn = document.querySelector('.buy');
+        const buyBtn = document.querySelector('.btn.btn-gradient-success[data-goods-id]');
         if (buyBtn) {
             buyBtn.addEventListener('click', async () => {
-                const goodsId = buyBtn.dataset.goodsId || document.querySelector('.add-cart')?.dataset.goodsId;
-                const num = parseInt(input.value);
+                const goodsId = buyBtn.dataset.goodsId || document.querySelector('.btn.btn-gradient-primary[data-goods-id]')?.dataset.goodsId;
+                const num = parseInt(document.getElementById('buy-num').value);
                 if (!goodsId) { showToast('商品信息获取失败'); return; }
                 try {
                     const response = await fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/add', {
@@ -399,13 +468,13 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
             });
         }
 
-        const deleteGoodsBtn = document.querySelector('.delete-goods');
+        const deleteGoodsBtn = document.querySelector('.btn.btn-gradient-danger[data-goods-id]');
         if (deleteGoodsBtn) {
             deleteGoodsBtn.addEventListener('click', () => {
                 if (!confirm('确定要删除该商品吗？')) return;
                 const goodsId = deleteGoodsBtn.dataset.goodsId;
                 deleteGoodsBtn.disabled = true;
-                deleteGoodsBtn.innerText = '删除中...';
+                deleteGoodsBtn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>删除中...';
                 fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=goods/delete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -419,10 +488,10 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                     } else {
                         showToast(data.msg || '删除失败');
                         deleteGoodsBtn.disabled = false;
-                        deleteGoodsBtn.innerText = '删除商品';
+                        deleteGoodsBtn.innerHTML = '<i class="bi bi-trash me-1"></i>删除';
                     }
                 })
-                .catch(err => { console.error('删除商品错误:', err); showToast('网络连接错误'); deleteGoodsBtn.disabled = false; deleteGoodsBtn.innerText = '删除商品'; });
+                .catch(err => { console.error('删除商品错误:', err); showToast('网络连接错误'); deleteGoodsBtn.disabled = false; deleteGoodsBtn.innerHTML = '<i class="bi bi-trash me-1"></i>删除'; });
             });
         }
 
@@ -515,14 +584,14 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         let selectedRating = 5;
 
         function checkFavorite() {
-            const goodsId = document.querySelector('.add-cart')?.dataset.goodsId;
+            const goodsId = document.querySelector('.btn.btn-gradient-primary[data-goods-id]')?.dataset.goodsId;
             if (!goodsId) return;
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=favorite/check&goods_id=' + goodsId)
                 .then(r => r.json())
                 .then(data => {
                     if (data.code === 200 && data.data.is_favorite) {
                         const btn = document.getElementById('favorite-btn');
-                        if (btn) { btn.innerHTML = '<i class="bi bi-heart-fill me-1"></i>已收藏'; btn.style.background = 'var(--text-muted)'; }
+                        if (btn) { btn.innerHTML = '<i class="bi bi-heart-fill me-1"></i>已收藏'; btn.classList.add('active'); }
                     }
                 })
                 .catch(err => console.error('检查收藏失败:', err));
@@ -544,7 +613,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         if (data.code === 200) {
                             showToast('取消收藏成功');
                             favoriteBtn.innerHTML = '<i class="bi bi-heart me-1"></i>收藏';
-                            favoriteBtn.style.background = '';
+                            favoriteBtn.classList.remove('active');
                         } else { showToast(data.msg || '操作失败'); }
                     });
                 } else {
@@ -558,7 +627,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         if (data.code === 200) {
                             showToast('收藏成功');
                             favoriteBtn.innerHTML = '<i class="bi bi-heart-fill me-1"></i>已收藏';
-                            favoriteBtn.style.background = 'var(--text-muted)';
+                            favoriteBtn.classList.add('active');
                         } else { showToast(data.msg || '操作失败'); }
                     });
                 }
@@ -566,7 +635,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         }
 
         function loadRating() {
-            const goodsId = document.querySelector('.add-cart')?.dataset.goodsId;
+            const goodsId = document.querySelector('.btn.btn-gradient-primary[data-goods-id]')?.dataset.goodsId;
             if (!goodsId) return;
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=comment/rating&goods_id=' + goodsId)
                 .then(r => r.json())
@@ -579,7 +648,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         const starsContainer = document.getElementById('rating-stars');
                         let starsHtml = '';
                         for (let i = 1; i <= 5; i++) {
-                            starsHtml += '<span style="font-size:20px;color:' + (i <= Math.round(avgRating) ? '#ffd700' : 'var(--border-color)') + ';">★</span>';
+                            starsHtml += '<span style="font-size:24px;color:' + (i <= Math.round(avgRating) ? '#ffd700' : '#ddd') + ';">★</span>';
                         }
                         starsContainer.innerHTML = starsHtml;
                     }
@@ -588,7 +657,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         }
 
         function loadComments() {
-            const goodsId = document.querySelector('.add-cart')?.dataset.goodsId;
+            const goodsId = document.querySelector('.btn.btn-gradient-primary[data-goods-id]')?.dataset.goodsId;
             if (!goodsId) return;
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=comment/list&goods_id=' + goodsId)
                 .then(r => r.json())
@@ -598,16 +667,16 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                         data.data.forEach(item => {
                             let stars = '';
                             for (let i = 1; i <= 5; i++) {
-                                stars += '<span style="font-size:14px;color:' + (i <= item.rating ? '#ffd700' : 'var(--border-color)') + ';">★</span>';
+                                stars += '<span style="font-size:16px;color:' + (i <= item.rating ? '#ffd700' : '#ddd') + ';">★</span>';
                             }
                             html += `
-                                <div style="border-bottom:1px solid var(--border-light);padding:15px 0;">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                                        <span style="font-weight:bold;color:var(--text-primary);">${item.username || '用户'}</span>
-                                        <span style="color:var(--text-muted);font-size:12px;">${item.create_time || ''}</span>
+                                <div class="border-bottom border-gray-100 py-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="font-bold text-dark">${item.username || '用户'}</span>
+                                        <span class="text-gray-400 text-sm">${item.create_time || ''}</span>
                                     </div>
-                                    <div style="margin-bottom:10px;">${stars}</div>
-                                    <div style="color:var(--text-primary);">${item.content}</div>
+                                    <div class="mb-2">${stars}</div>
+                                    <div class="text-gray-600">${item.content}</div>
                                 </div>
                             `;
                         });
@@ -617,26 +686,29 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 .catch(err => console.error('加载评价失败:', err));
         }
 
-        const stars = document.querySelectorAll('.rating-input .star');
+        const stars = document.querySelectorAll('#rating-input .star');
         stars.forEach(star => {
             star.style.cursor = 'pointer';
-            star.style.fontSize = '24px';
-            star.style.color = 'var(--border-color)';
-            star.style.marginRight = '5px';
+            star.style.fontSize = '28px';
+            star.style.color = '#ddd';
+            star.style.marginRight = '4px';
             star.addEventListener('mouseenter', () => {
                 const rating = parseInt(star.dataset.rating);
-                stars.forEach(s => { s.style.color = parseInt(s.dataset.rating) <= rating ? '#ffd700' : 'var(--border-color)'; });
+                stars.forEach(s => { s.style.color = parseInt(s.dataset.rating) <= rating ? '#ffd700' : '#ddd'; });
             });
             star.addEventListener('click', () => { selectedRating = parseInt(star.dataset.rating); });
             star.addEventListener('mouseleave', () => {
-                stars.forEach(s => { s.style.color = parseInt(s.dataset.rating) <= selectedRating ? '#ffd700' : 'var(--border-color)'; });
+                stars.forEach(s => { s.style.color = parseInt(s.dataset.rating) <= selectedRating ? '#ffd700' : '#ddd'; });
             });
         });
 
         document.getElementById('submit-comment-btn')?.addEventListener('click', () => {
             const content = document.getElementById('comment-content').value.trim();
-            const goodsId = document.querySelector('.add-cart')?.dataset.goodsId;
+            const goodsId = document.querySelector('.btn.btn-gradient-primary[data-goods-id]')?.dataset.goodsId;
             if (!content) { showToast('请输入评价内容'); return; }
+            const btn = document.getElementById('submit-comment-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-spinner bi-spin me-1"></i>提交中...';
             fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=comment/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -651,7 +723,8 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                     loadRating();
                 } else { showToast(data.msg || '评价失败'); }
             })
-            .catch(err => { console.error('提交评价失败:', err); showToast('网络错误'); });
+            .catch(err => { console.error('提交评价失败:', err); showToast('网络错误'); })
+            .finally(() => { btn.disabled = false; btn.innerHTML = '提交评价'; });
         });
     </script>
 </body>
