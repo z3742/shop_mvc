@@ -2267,7 +2267,6 @@ html {
 
 /* ========== 响应式调整（整合 style.css） ========== */
 @media (max-width: 1200px) {
-
     .flash-sale-grid,
     .goods-grid {
         grid-template-columns: repeat(5, 1fr);
@@ -2275,7 +2274,6 @@ html {
 }
 
 @media (max-width: 992px) {
-
     .flash-sale-grid,
     .goods-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -2287,7 +2285,6 @@ html {
 }
 
 @media (max-width: 768px) {
-
     .flash-sale-grid,
     .goods-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -2295,7 +2292,6 @@ html {
 }
 
 @media (max-width: 576px) {
-
     .flash-sale-grid,
     .goods-grid {
         grid-template-columns: repeat(2, 1fr);
