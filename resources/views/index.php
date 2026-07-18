@@ -13,20 +13,26 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
 
 <head>
     <meta charset="UTF-8">
+    <!-- viewport: 响应式视口设置，width=device-width 自适应设备宽度，initial-scale=1.0 初始缩放比例 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>热卖商城 - 首页</title>
     <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/style.css">
+    <!-- 引入 Bootstrap 5 CSS 框架 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 Bootstrap Icons 图标库 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- 自定义 Bootstrap 样式覆盖 -->
     <link rel="stylesheet" href="<?php echo APP_BASE ?>/resources/css/bootstrap-custom.css">
 </head>
 
 <body>
+    <!-- 页面加载动画 -->
     <div class="loader">
         <div class="loader-circle"></div>
         <p>页面加载中...</p>
     </div>
 
+    <!-- 顶部信息栏 -->
     <div class="top-bar">
         <div class="top-bar-inner">
             <div class="fl">欢迎来到热卖商城！正品保障 | 全国包邮 | 售后无忧</div>
@@ -45,6 +51,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         </div>
     </div>
 
+    <!-- 头部区域 -->
     <div class="header">
         <div class="header-inner">
             <div class="logo">
@@ -55,19 +62,36 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 <input type="text" class="search-input" name="keyword" placeholder="搜索商品或分类">
                 <button type="submit" class="search-btn"><i class="bi bi-search me-1"></i>搜索</button>
             </form>
+            <!-- data-bs-toggle="tooltip": 启用 Bootstrap Tooltip 提示组件 -->
+            <!-- data-bs-placement="bottom": 设置提示框显示在元素下方 -->
             <div class="head-cart" id="head-cart" data-bs-toggle="tooltip" data-bs-placement="bottom" title="点击查看购物车">
                 <i class="bi bi-cart3 me-1"></i>购物车<span class="cart-num" id="cart-num"><?= $cartCount ?></span>
             </div>
         </div>
     </div>
 
+    <!-- ========== Bootstrap 导航栏组件 ========== -->
+    <!-- navbar: 基础导航栏类 -->
+    <!-- navbar-expand-lg: 在 lg (≥1200px) 屏幕以上展开，以下折叠 -->
+    <!-- sticky-top: 粘性定位，滚动时固定在顶部 -->
     <nav class="navbar navbar-expand-lg bs-navbar sticky-top">
+        <!-- container-fluid: 流体容器，宽度100%，带左右padding -->
         <div class="container-fluid" style="max-width:1600px;">
+            <!-- navbar-toggler: 折叠切换按钮，仅在小屏幕显示 -->
+            <!-- data-bs-toggle="offcanvas": 点击时触发 Offcanvas 组件 -->
+            <!-- data-bs-target="#mobileNav": 指定目标 Offcanvas 的 ID -->
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
                 <i class="bi bi-list fs-4" style="color:var(--text-primary);"></i>
             </button>
+            <!-- navbar-collapse: 可折叠的导航内容容器 -->
+            <!-- justify-content-center: 水平居中对齐内容 -->
             <div class="collapse navbar-collapse justify-content-center">
+                <!-- navbar-nav: 导航项目列表容器 -->
+                <!-- gap-1: 项目之间的间距（Bootstrap 间距工具类） -->
                 <ul class="navbar-nav gap-1">
+                    <!-- nav-item: 导航项容器 -->
+                    <!-- nav-link: 导航链接样式 -->
+                    <!-- active: 当前激活状态 -->
                     <li class="nav-item"><a class="nav-link active" href="<?php echo APP_BASE ?>/index/index"><i class="bi bi-house-door me-1"></i>首页</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/category"><i class="bi bi-grid me-1"></i>全部分类</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo APP_BASE ?>/index/goods_list"><i class="bi bi-stars me-1"></i>精选商品</a></li>
@@ -79,13 +103,23 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         </div>
     </nav>
 
-    <!-- 移动端导航 Offcanvas -->
+    <!-- ========== Bootstrap Offcanvas 组件（移动端侧边栏） ========== -->
+    <!-- offcanvas: 侧边滑出面板组件 -->
+    <!-- offcanvas-start: 从左侧滑出（可选 offcanvas-end 从右侧） -->
+    <!-- tabindex="-1": 防止页面焦点进入未打开的 offcanvas -->
     <div class="offcanvas offcanvas-start bs-offcanvas" tabindex="-1" id="mobileNav">
+        <!-- offcanvas-header: offcanvas 的头部区域 -->
         <div class="offcanvas-header">
             <h5 class="offcanvas-title"><i class="bi bi-list me-2"></i>导航菜单</h5>
+            <!-- btn-close: Bootstrap 关闭按钮 -->
+            <!-- data-bs-dismiss="offcanvas": 点击关闭 offcanvas -->
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
+        <!-- offcanvas-body: offcanvas 的内容区域 -->
         <div class="offcanvas-body">
+            <!-- list-group: 列表组组件 -->
+            <!-- list-group-item: 列表项 -->
+            <!-- active: 当前选中项 -->
             <div class="list-group bs-list-group">
                 <a href="<?php echo APP_BASE ?>/index/index" class="list-group-item active"><i class="bi bi-house-door me-2"></i>首页</a>
                 <a href="<?php echo APP_BASE ?>/index/category" class="list-group-item"><i class="bi bi-grid me-2"></i>全部分类</a>
@@ -149,18 +183,38 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
 
     <!-- ========== Banner区域 ========== -->
     <div class="main-content" style="margin-top: 20px;">
+        <!-- ========== Bootstrap Grid 栅格系统 ========== -->
+        <!-- row: 行容器，所有 col 必须放在 row 内 -->
+        <!-- g-4: 列之间的间距（gap-4），单位是 rem -->
         <div class="row g-4">
-            <!-- 左侧分类导航 -->
+            <!-- ========== 左侧分类导航 ========== -->
+            <!-- col-lg-2: 在 lg (≥1200px) 屏幕占 2/12 宽度 -->
+            <!-- col-md-12: 在 md (≥768px) 屏幕占 12/12 宽度（整行） -->
+            <!-- Bootstrap 响应式断点: xs(<576px) sm(≥576px) md(≥768px) lg(≥992px) xl(≥1200px) xxl(≥1400px) -->
             <div class="col-lg-2 col-md-12">
+                <!-- rounded-2xl: 超大圆角（Bootstrap 圆角工具类） -->
+                <!-- p-0: 内边距为0 -->
+                <!-- overflow-hidden: 隐藏溢出内容 -->
                 <div class="glass-card rounded-2xl p-0 overflow-hidden">
                     <div class="bg-gradient-blue px-4 py-3">
+                        <!-- d-flex: 弹性布局（display: flex） -->
+                        <!-- align-items-center: 垂直居中对齐 -->
+                        <!-- gap-2: 元素之间间距 -->
                         <div class="d-flex align-items-center gap-2 text-white">
                             <i class="bi bi-folder2-open"></i>
                             <span class="font-bold">全部分类</span>
                         </div>
                     </div>
+                    <!-- list-group: 列表组 -->
+                    <!-- list-group-flush: 移除列表组边框，与父容器边缘对齐 -->
                     <ul class="list-group list-group-flush">
                         <?php foreach ($categoryList as $cat): ?>
+                            <!-- list-group-item: 列表项 -->
+                            <!-- border-0: 无边框 -->
+                            <!-- border-bottom: 底部边框 -->
+                            <!-- border-dashed: 虚线边框 -->
+                            <!-- hover:bg-blue-50/50: 悬停时背景色（自定义） -->
+                            <!-- transition-colors: 颜色过渡动画 -->
                             <li class="list-group-item border-0 border-bottom border-dashed border-gray-100 hover:bg-blue-50/50 transition-colors">
                                 <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=<?= $cat['cat_id'] ?>" class="d-flex align-items-center gap-2 text-dark hover:text-primary-light w-full">
                                     <span class="w-1.5 h-1.5 rounded-full bg-primary-light"></span>
@@ -172,19 +226,34 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 </div>
             </div>
 
-            <!-- 中间主Banner -->
+            <!-- ========== 中间主Banner（轮播） ========== -->
+            <!-- col-lg-7: lg屏幕占7/12 -->
+            <!-- col-md-8: md屏幕占8/12 -->
             <div class="col-lg-7 col-md-8">
+                <!-- ========== Bootstrap Carousel 轮播组件 ========== -->
+                <!-- carousel: 轮播容器 -->
+                <!-- slide: 滑动过渡效果 -->
+                <!-- carousel-fade: 淡入淡出过渡效果 -->
+                <!-- data-bs-ride="carousel": 自动播放 -->
                 <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                    <!-- carousel-inner: 轮播内容容器 -->
                     <div class="carousel-inner rounded-2xl overflow-hidden shadow-lg">
                         <?php if (!empty($bannerList)): ?>
                             <?php foreach ($bannerList as $key => $banner): ?>
+                                <!-- carousel-item: 轮播项 -->
+                                <!-- active: 当前激活项（必须有一个） -->
                                 <div class="carousel-item <?= $key == 0 ? 'active' : '' ?>">
                                     <a href="<?= htmlspecialchars($banner['banner_url']) ?>">
+                                        <!-- d-block: 块级元素 -->
+                                        <!-- w-100: 宽度100% -->
                                         <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($banner['banner_img']) ?>" 
                                              class="d-block w-100" 
                                              style="height: 400px; object-fit: cover;"
                                              alt="<?= htmlspecialchars($banner['banner_title']) ?>">
                                     </a>
+                                    <!-- carousel-caption: 轮播文字说明 -->
+                                    <!-- d-none: 默认隐藏 -->
+                                    <!-- d-md-block: md屏幕以上显示 -->
                                     <div class="carousel-caption d-none d-md-block text-left" style="bottom: 30px; left: 30px; right: auto;">
                                         <h2 class="text-white text-3xl font-extrabold mb-2 text-shadow-lg"><?= htmlspecialchars($banner['banner_title']) ?></h2>
                                     </div>
@@ -220,17 +289,23 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                             </div>
                         <?php endif; ?>
                     </div>
+                    <!-- carousel-control-prev: 上一张按钮 -->
+                    <!-- data-bs-target="#mainCarousel": 指定控制的轮播 ID -->
+                    <!-- data-bs-slide="prev": 点击切换到上一张 -->
                     <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon bg-black/30 rounded-full p-2" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
+                    <!-- carousel-control-next: 下一张按钮 -->
                     <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
                         <span class="carousel-control-next-icon bg-black/30 rounded-full p-2" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
                     </button>
+                    <!-- carousel-indicators: 轮播指示器（小圆点） -->
                     <div class="carousel-indicators" style="bottom: 15px;">
                         <?php if (!empty($bannerList)): ?>
                             <?php foreach ($bannerList as $key => $banner): ?>
+                                <!-- data-bs-slide-to="<?= $key ?>": 点击切换到指定索引 -->
                                 <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="<?= $key ?>" <?= $key == 0 ? 'class="active"' : '' ?> class="w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors"></button>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -242,8 +317,13 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 </div>
             </div>
 
-            <!-- 右侧小Banner -->
+            <!-- ========== 右侧小Banner ========== -->
+            <!-- col-lg-3: lg屏幕占3/12 -->
+            <!-- col-md-4: md屏幕占4/12 -->
             <div class="col-lg-3 col-md-4">
+                <!-- flex-column: 垂直方向排列（flex-direction: column） -->
+                <!-- gap-3: 元素间距 -->
+                <!-- h-full: 高度100% -->
                 <div class="d-flex flex-column gap-3 h-full">
                     <a href="<?php echo APP_BASE ?>/index/goods_list?cat_id=1" class="glass-card rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
                         <img src="<?php echo APP_BASE ?>/resources/images/banner/banner-phone.jpg" class="w-full" style="height: 95px; object-fit: cover;" alt="banner-phone">
@@ -266,6 +346,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <?php if (!empty($hotRanking)): ?>
     <div class="main-content" style="margin-top: 20px;">
         <div class="bg-gradient-blue rounded-2xl p-4">
+            <!-- justify-content-between: 两端对齐 -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center gap-2 text-white">
                     <i class="bi bi-trophy-fill text-xl"></i>
@@ -273,8 +354,18 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 </div>
                 <a href="<?php echo APP_BASE ?>/index/goods_list?sort=sales" class="text-white/80 hover:text-white text-sm">查看更多 <i class="bi bi-arrow-right"></i></a>
             </div>
+            <!-- ========== Bootstrap row-cols 响应式列数 ========== -->
+            <!-- row-cols-1: 默认1列 -->
+            <!-- row-cols-md-2: md屏幕以上2列 -->
+            <!-- row-cols-lg-5: lg屏幕以上5列 -->
+            <!-- g-3: 间距 -->
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-5 g-3">
                 <?php foreach ($hotRanking as $index => $item): $rank = $index + 1; ?>
+                    <!-- col: 必须添加，配合 row-cols 使用 -->
+                    <!-- flex: 弹性布局 -->
+                    <!-- flex-col: 垂直排列 -->
+                    <!-- items-center: 水平居中 -->
+                    <!-- text-center: 文字居中 -->
                     <a href="<?php echo APP_BASE ?>/index/goods_detail?id=<?= $item['goods_id'] ?>" class="col glass-card rounded-xl p-3 flex flex-col items-center text-center hover:shadow-lg transition-all hover:-translate-y-1">
                         <span class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mb-2" 
                               style="background: <?= $rank == 1 ? 'linear-gradient(135deg, #f59e0b, #dc2626)' : ($rank == 2 ? 'linear-gradient(135deg, #64748b, #475569)' : ($rank == 3 ? 'linear-gradient(135deg, #b45309, #92400e)' : 'var(--primary-light)')) ?>">
@@ -285,6 +376,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                              alt="<?= htmlspecialchars($item['goods_name']) ?>"
                              class="w-16 h-16 rounded-xl object-cover bg-gray-100 mb-2">
                         <div class="flex-1 min-w-0">
+                            <!-- line-clamp-1: 单行省略（自定义样式） -->
                             <div class="text-dark font-medium text-sm line-clamp-1"><?= htmlspecialchars($item['goods_name']) ?></div>
                             <div class="text-danger font-bold mt-1">¥<?= number_format($item['goods_price'], 2) ?></div>
                         </div>
@@ -297,6 +389,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
 
     <!-- ========== 热门商品 ========== -->
     <div class="main-content" style="margin-top: 20px;">
+        <!-- border-bottom: 底部边框 -->
         <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-gray-200">
             <div class="d-flex align-items-center gap-2">
                 <i class="bi bi-fire text-lg text-orange-500"></i>
@@ -307,9 +400,14 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         <div class="row g-4">
             <?php if (!empty($randomGoods)): ?>
                 <?php foreach ($randomGoods as $goods): ?>
+                    <!-- col-lg-2: lg屏幕2/12 -->
+                    <!-- col-md-3: md屏幕3/12 -->
+                    <!-- col-sm-4: sm屏幕4/12 -->
+                    <!-- col-xs-6: xs屏幕6/12（2列） -->
                     <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
                         <div class="product-card card-lift rounded-2xl overflow-hidden">
                             <div class="relative">
+                                <!-- aspect-square: 宽高比1:1（自定义样式） -->
                                 <div class="aspect-square bg-gray-100 overflow-hidden">
                                     <img src="<?php echo APP_BASE ?>/resources/images/<?= htmlspecialchars($goods['goods_img'] ?? 'default.jpg') ?>"
                                          onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
@@ -317,10 +415,18 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                                          class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
                                 </div>
                                 <?php if ($goods['is_hot']): ?>
+                                    <!-- ========== Bootstrap Badge 徽章组件 ========== -->
+                                    <!-- badge: 徽章 -->
+                                    <!-- bg-gradient-blue: 自定义渐变背景 -->
+                                    <!-- text-xs: 超小字体 -->
+                                    <!-- font-bold: 粗体 -->
+                                    <!-- px-2: 水平内边距 -->
+                                    <!-- py-1: 垂直内边距 -->
                                     <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
                                 <?php endif; ?>
                             </div>
                             <div class="p-3">
+                                <!-- line-clamp-2: 两行省略 -->
                                 <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors"><?= htmlspecialchars($goods['goods_name']) ?></h4>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span class="text-danger font-bold text-lg">¥<?= number_format($goods['goods_price'], 2) ?></span>
@@ -328,6 +434,13 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                                         <span class="text-gray-400 text-xs">已售<?= $goods['sales'] ?></span>
                                     <?php endif; ?>
                                 </div>
+                                <!-- ========== Bootstrap Button 按钮组件 ========== -->
+                                <!-- btn: 按钮基础类 -->
+                                <!-- btn-gradient-primary: 自定义渐变按钮 -->
+                                <!-- w-full: 宽度100% -->
+                                <!-- mt-3: 上边距 -->
+                                <!-- text-sm: 小字体 -->
+                                <!-- py-2: 垂直内边距 -->
                                 <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="<?= $goods['goods_id'] ?>"><i class="bi bi-eye me-1"></i>查看详情</button>
                             </div>
                         </div>
@@ -407,6 +520,7 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
         </div>
     </div>
 
+    <!-- 页脚 -->
     <div class="footer">
         <p>热卖商城 ©2026 版权所有 | 客服热线：400-123-4567 | 地址：线上电商产业园</p>
     </div>
@@ -436,18 +550,25 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
     <div class="back-top"><i class="bi bi-arrow-up"></i></div>
     <div class="toast" id="toast"></div>
 
+    <!-- 引入 Bootstrap JavaScript（包含 Popper.js） -->
+    <!-- bootstrap.bundle.min.js: 包含所有 Bootstrap JS 组件 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Bootstrap Tooltip 初始化 -->
     <script>
-        // 初始化 Bootstrap Tooltip
+        // 等待 DOM 加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有带有 data-bs-toggle="tooltip" 属性的元素
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            // 遍历并创建 Tooltip 实例
             tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
     </script>
+    
+    <!-- 主题切换 -->
     <script>
-        /* ========== 主题切换 ========== */
         (function() {
             const themeToggle = document.getElementById('theme-toggle');
             const themeIcon = document.getElementById('theme-icon');
@@ -469,8 +590,10 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 }
             });
         })();
+    </script>
 
-        /* ========== 页面加载动画 ========== */
+    <!-- 页面加载动画 -->
+    <script>
         const loader = document.querySelector('.loader');
         const mainBoxes = document.querySelectorAll('.main-content');
         window.addEventListener('load', () => {
@@ -479,38 +602,29 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
                 mainBoxes.forEach(box => box.classList.add('show'));
             }, 800);
         });
+    </script>
 
+    <script>
         function showToast(text) {
             const toast = document.getElementById('toast');
-            if (toast) {
-                toast.innerText = text;
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2000);
-            }
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        /* ========== 返回顶部 ========== */
-        const backTop = document.querySelector('.back-top');
-        if (backTop) {
-            window.addEventListener('scroll', () => {
-                backTop.style.display = document.documentElement.scrollTop > 300 ? 'block' : 'none';
+        document.querySelectorAll('.btn[data-goods-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-goods-id');
+                window.location.href = '<?php echo APP_BASE ?>/index/goods_detail?id=' + id;
             });
-            backTop.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        }
+        });
 
-        /* ========== 秒杀倒计时 ========== */
+        /* 倒计时功能 */
         (function() {
-            const timerEl = document.getElementById('flash-timer');
-            if (!timerEl) return;
-            const endTime = timerEl.dataset.endTime;
-            if (!endTime) return;
-
+            const endTime = new Date("2024-12-31 23:59:59").getTime();
             function updateTimer() {
-                const end = new Date(endTime).getTime();
                 const now = new Date().getTime();
-                const diff = end - now;
+                const diff = endTime - now;
                 if (diff <= 0) {
                     document.getElementById('timer-hours').textContent = '00';
                     document.getElementById('timer-minutes').textContent = '00';
@@ -528,193 +642,57 @@ $recentlyViewed = isset($recentlyViewed) ? $recentlyViewed : [];
             setInterval(updateTimer, 1000);
         })();
 
-        /* ========== 交互功能 ========== */
-        document.addEventListener('DOMContentLoaded', function() {
-            const viewBtns = document.querySelectorAll('.view-detail-btn');
-            viewBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const goodsId = btn.dataset.goodsId;
-                    window.location.href = '<?php echo APP_BASE ?>/index/goods_detail?id=' + goodsId;
-                });
-            });
+        /* 猜你喜欢加载 */
+        (function() {
+            const recommendContainer = document.getElementById('recommend-goods');
+            if (!recommendContainer) return;
 
-            const headCart = document.getElementById('head-cart');
-            const cartFloatBox = document.getElementById('cart-float-box');
-            const overlay = document.getElementById('overlay');
-            const cartFloatClose = document.getElementById('cart-float-close');
-            const cartFloatContent = document.getElementById('cart-float-content');
-            const cartFloatPrice = document.querySelector('.cart-float-price');
-
-            if (cartFloatContent) {
-                cartFloatContent.addEventListener('click', function(e) {
-                    const target = e.target;
-                    if (target.classList.contains('cart-float-del')) {
-                        e.stopPropagation();
-                        const cartId = target.getAttribute('data-cart-id');
-                        if (cartId) deleteCartItem(cartId);
-                    }
-                });
-            }
-
-            function loadCartData() {
-                fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/index')
-                    .then(r => r.text())
-                    .then(text => {
-                        let data;
-                        try { data = JSON.parse(text); } catch (e) { return; }
-                        if (data.code === 200) {
-                            if (data.data && data.data.length > 0) {
-                                let html = '';
-                                data.data.forEach(item => {
-                                    html += `
-                                        <div class="cart-float-item" data-cart-id="${item.cart_id}">
-                                            <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}"
-                                                 onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                                 alt="${item.goods_name}">
-                                            <div class="cart-float-item-info">
-                                                <div class="cart-float-item-name">${item.goods_name}</div>
-                                                <div class="cart-float-item-price">¥${(item.goods_price * item.goods_num).toFixed(2)}</div>
-                                                <div class="cart-float-item-num">x${item.goods_num}</div>
+            setTimeout(() => {
+                fetch('<?php echo APP_BASE ?>/index/getRecommend')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.code === 200 && data.data && data.data.length > 0) {
+                            let html = '';
+                            data.data.forEach(goods => {
+                                html += `
+                                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                                        <div class="product-card card-lift rounded-2xl overflow-hidden">
+                                            <div class="relative">
+                                                <div class="aspect-square bg-gray-100 overflow-hidden">
+                                                    <img src="${'<?php echo APP_BASE ?>/resources/images/'}${goods.goods_img || 'default.jpg'}" 
+                                                         onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
+                                                         alt="${goods.goods_name}"
+                                                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                                                </div>
                                             </div>
-                                            <span class="cart-float-del" data-cart-id="${item.cart_id}">×</span>
-                                        </div>
-                                    `;
-                                });
-                                cartFloatContent.innerHTML = html;
-                                cartFloatPrice.innerText = '¥' + data.total.toFixed(2);
-                            } else {
-                                cartFloatContent.innerHTML = '<div class="cart-float-empty">购物车为空</div>';
-                                cartFloatPrice.innerText = '¥ 0.00';
-                            }
-                        } else if (data.code === 401) {
-                            cartFloatContent.innerHTML = '<div class="cart-float-empty"><a href="<?php echo APP_BASE ?>/index/login">请先登录查看购物车</a></div>';
-                            cartFloatPrice.innerText = '¥ 0.00';
-                        }
-                    }).catch(err => console.error('加载购物车失败', err));
-            }
-
-            function deleteCartItem(cartId) {
-                fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=cart/delete', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: 'cart_id=' + cartId
-                })
-                .then(r => r.text())
-                .then(text => {
-                    let data;
-                    try { data = JSON.parse(text); } catch (e) { return; }
-                    if (data.code === 200) {
-                        const cartNumEl = document.getElementById('cart-num');
-                        const cartCountEl = document.querySelector('.cart-count');
-                        if (cartNumEl) cartNumEl.innerText = data.cart_count || 0;
-                        if (cartCountEl) cartCountEl.innerText = data.cart_count || 0;
-                        loadCartData();
-                        showToast('删除成功');
-                    } else {
-                        showToast(data.msg || '删除失败');
-                    }
-                })
-                .catch(err => { console.error('删除失败', err); showToast('删除失败，请重试'); });
-            }
-
-            if (headCart) {
-                headCart.addEventListener('click', () => {
-                    loadCartData();
-                    cartFloatBox.classList.add('show');
-                    overlay.classList.add('show');
-                });
-            }
-            if (cartFloatClose) {
-                cartFloatClose.addEventListener('click', () => {
-                    cartFloatBox.classList.remove('show');
-                    overlay.classList.remove('show');
-                });
-            }
-            if (overlay) {
-                overlay.addEventListener('click', () => {
-                    cartFloatBox.classList.remove('show');
-                    overlay.classList.remove('show');
-                });
-            }
-
-            // Banner轮播
-            const mainBanner = document.querySelector('.main-banner');
-            const slideItems = document.querySelectorAll('.slide-item');
-            const bannerDots = document.querySelectorAll('.banner-dot');
-            const prevBtn = document.getElementById('banner-prev');
-            const nextBtn = document.getElementById('banner-next');
-
-            if (mainBanner && slideItems.length > 1) {
-                let currentIndex = 0;
-                const totalSlides = slideItems.length;
-
-                function showSlide(index) {
-                    slideItems.forEach((slide, i) => {
-                        slide.classList.remove('active');
-                        bannerDots[i]?.classList.remove('active');
-                    });
-                    slideItems[index].classList.add('active');
-                    bannerDots[index]?.classList.add('active');
-                    currentIndex = index;
-                }
-                function nextSlide() { showSlide((currentIndex + 1) % totalSlides); }
-                function prevSlide() { showSlide((currentIndex - 1 + totalSlides) % totalSlides); }
-
-                bannerDots.forEach((dot, index) => dot.addEventListener('click', () => showSlide(index)));
-                prevBtn?.addEventListener('click', (e) => { e.preventDefault(); prevSlide(); });
-                nextBtn?.addEventListener('click', (e) => { e.preventDefault(); nextSlide(); });
-
-                let timer = setInterval(nextSlide, 4000);
-                mainBanner.addEventListener('mouseenter', () => clearInterval(timer));
-                mainBanner.addEventListener('mouseleave', () => { timer = setInterval(nextSlide, 4000); });
-            }
-
-            loadRecommendGoods();
-        });
-
-        function loadRecommendGoods() {
-            fetch('<?php echo APP_BASE ?>/public/index.php?pathinfo=goods/hot')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.code === 200 && data.data && data.data.length > 0) {
-                        let html = '';
-                        data.data.forEach(item => {
-                            html += `
-                                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-                                    <div class="product-card card-lift rounded-2xl overflow-hidden">
-                                        <div class="relative">
-                                            <div class="aspect-square bg-gray-100 overflow-hidden">
-                                                <img src="<?php echo APP_BASE ?>/resources/images/${item.goods_img || 'default.jpg'}"
-                                                     onerror="this.src='<?php echo APP_BASE ?>/resources/images/goods/default.jpg'"
-                                                     alt="${item.goods_name}"
-                                                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                                            <div class="p-3">
+                                                <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors">${goods.goods_name}</h4>
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <span class="text-danger font-bold text-lg">¥${parseFloat(goods.goods_price).toFixed(2)}</span>
+                                                </div>
+                                                <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="${goods.goods_id}"><i class="bi bi-eye me-1"></i>查看详情</button>
                                             </div>
-                                            <span class="absolute top-2 left-2 badge bg-gradient-blue text-white text-xs font-bold px-2 py-1 rounded-lg">HOT</span>
-                                        </div>
-                                        <div class="p-3">
-                                            <h4 class="font-medium text-dark text-sm line-clamp-2 mb-2 hover:text-primary-light transition-colors">${item.goods_name}</h4>
-                                            <span class="text-danger font-bold text-lg">¥${parseFloat(item.goods_price).toFixed(2)}</span>
-                                            <button class="btn btn-gradient-primary w-full mt-3 text-sm py-2" data-goods-id="${item.goods_id}"><i class="bi bi-eye me-1"></i>查看详情</button>
                                         </div>
                                     </div>
-                                </div>
-                            `;
-                        });
-                        document.getElementById('recommend-goods').innerHTML = html;
-                        document.querySelectorAll('.btn[data-goods-id]').forEach(btn => {
-                            btn.addEventListener('click', () => {
-                                window.location.href = '<?php echo APP_BASE ?>/index/goods_detail?id=' + btn.dataset.goodsId;
+                                `;
                             });
-                        });
-                    } else {
-                        document.getElementById('recommend-goods').innerHTML = '<div class="col-12 text-center text-gray-400 py-10">暂无推荐商品</div>';
-                    }
-                })
-                .catch(err => {
-                    console.error('加载推荐商品失败', err);
-                    document.getElementById('recommend-goods').innerHTML = '<div class="col-12 text-center text-gray-400 py-10">加载推荐失败</div>';
-                });
-        }
+                            recommendContainer.innerHTML = html;
+                            
+                            document.querySelectorAll('.btn[data-goods-id]').forEach(btn => {
+                                btn.addEventListener('click', () => {
+                                    window.location.href = '<?php echo APP_BASE ?>/index/goods_detail?id=' + btn.getAttribute('data-goods-id');
+                                });
+                            });
+                        } else {
+                            recommendContainer.innerHTML = '<div class="col-12 text-center text-gray-400 py-10">暂无推荐商品</div>';
+                        }
+                    })
+                    .catch(err => {
+                        console.error('加载推荐商品失败', err);
+                        recommendContainer.innerHTML = '<div class="col-12 text-center text-gray-400 py-10">加载推荐失败</div>';
+                    });
+            }, 500);
+        })();
 
         /* ========== 图片懒加载 ========== */
         (function() {
